@@ -54,8 +54,8 @@ static errno_t AtmosphericTurbulence_make_master_turbulence_screen__cli()
             data.cmdargtoken[2].val.string,
             data.cmdargtoken[3].val.numl,
             data.cmdargtoken[4].val.numf,
-            data.cmdargtoken[4].val.numf,
-            data.cmdargtoken[4].val.numl);
+            data.cmdargtoken[5].val.numf,
+            data.cmdargtoken[6].val.numl);
 
         return CLICMD_SUCCESS;
     }

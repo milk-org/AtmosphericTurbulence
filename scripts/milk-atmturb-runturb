@@ -1,12 +1,21 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+MSdescr="Create atmospheric turbulence sequence"
 
 
-# number of arguments to script
-NBARGS=1
+source milk-script-std-config
 
-# link to executable - change as needed
-execname="AtmosphericTurbulenceSimul"
 
+RequiredCommands=(milk)
+RequiredFiles=()
+RequiredDirs=()
+
+
+source milk-argparse
+
+
+
+# execute script commands
 
 ## OPTIONAL : refractive index / absorption coefficients files (RIA files)
 RIAfile_dir="/data/WORK/2014-AtmTurb/RefractiveIndices"
@@ -22,6 +31,36 @@ RIAfile_Kr="${RIAfile_dir}/R30000/RIA_Kr.dat"
 RIAfile_H2="${RIAfile_dir}/R30000/RIA_H2.dat"
 RIAfile_O3="${RIAfile_dir}/R300000/RIA_O3.dat"
 
+NBlayers=20 # default
+PRECISION="0" #default 0: single
+COMPmode="1" # default: compute wavefronts
+
+milk << EOF
+mload milkWFpropagate
+mload milkOpticsMaterials
+mload milkAtmosphereModel
+mload milkAtmosphericTurbulence
+m?
+m? WFpropagate
+m? OpticsMaterials
+m? AtmosphereModel
+m? AtmosphericTurbulence
+
+exitCLI
+EOF
+
+exit
+
+
+
+# number of arguments to script
+NBARGS=1
+
+# link to executable - change as needed
+execname="AtmosphericTurbulenceSimul"
+
+
+
 
 
 # ======================= PROCESS NAME =================================
@@ -31,9 +70,7 @@ echo "pname = $pname"
 
 
 
-NBlayers=20 # default
-PRECISION="0" #default 0: single
-COMPmode="1" # default: compute wavefronts
+
 
 printHELP ()
 {

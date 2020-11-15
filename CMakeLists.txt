@@ -1,7 +1,11 @@
 # list source files (.c) other than modulename.c
 set(SOURCEFILES
+	makeHV_CN2prof.c
 	make_master_turbulence_screen.c
-	make_master_turbulence_screen_pow.c)
+	make_master_turbulence_screen_pow.c
+	make_wavefront_sequence.c
+	Z_Air.c
+	)
 
 # list include files (.h) that should be installed on system
 set(INCLUDEFILES
@@ -9,7 +13,7 @@ set(INCLUDEFILES
 
 # list scripts that should be installed on system
 set(SCRIPTFILES
-	scripts/milk-semtestspeed)
+	scripts/milk-atmturb-runturb)
 
 
 
