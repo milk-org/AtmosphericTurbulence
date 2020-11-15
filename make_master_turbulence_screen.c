@@ -12,9 +12,13 @@
 
 // required for create_2Dimage_ID
 #include "COREMOD_memory/COREMOD_memory.h"
+
 #include "COREMOD_arith/COREMOD_arith.h"
 #include "fft/fft.h"
 #include "image_gen/image_gen.h"
+
+
+
 
 // ==========================================
 // Forward declaration(s)
@@ -113,13 +117,12 @@ errno_t AtmosphericTurbulence_make_master_turbulence_screen(
 )
 {
     imageID ID;
-    uint32_t ii, jj;
     double value, C1, C2;
     long cnt;
     long Dlim = 3;
     imageID IDv;
 
-    int OUTERSCALE_MODE = 1; // 1 if outer scale
+    //int OUTERSCALE_MODE = 1; // 1 if outer scale
     double OUTERscale_f0;
     double INNERscale_f0;
     double dx, dy, r;
@@ -175,8 +178,8 @@ errno_t AtmosphericTurbulence_make_master_turbulence_screen(
 
     if(WFprecision == 0)
     {
-        for(ii = 0; ii < size; ii++)
-            for(jj = 0; jj < size; jj++)
+        for(uint32_t ii = 0; ii < size; ii++)
+            for(uint32_t jj = 0; jj < size; jj++)
             {
                 dx = 1.0 * ii - size / 2;
                 dy = 1.0 * jj - size / 2;
@@ -203,8 +206,8 @@ errno_t AtmosphericTurbulence_make_master_turbulence_screen(
     }
     else
     {
-        for(ii = 0; ii < size; ii++)
-            for(jj = 0; jj < size; jj++)
+        for(uint32_t ii = 0; ii < size; ii++)
+            for(uint32_t jj = 0; jj < size; jj++)
             {
                 dx = 1.0 * ii - size / 2;
                 dy = 1.0 * jj - size / 2;
@@ -247,8 +250,8 @@ errno_t AtmosphericTurbulence_make_master_turbulence_screen(
     ID = image_ID("tmpg");
     if(WFprecision == 0)
     {
-        for(ii = 0; ii < size; ii++)
-            for(jj = 0; jj < size; jj++)
+        for(uint32_t ii = 0; ii < size; ii++)
+            for(uint32_t jj = 0; jj < size; jj++)
             {
                 dx = 1.0 * ii - size / 2;
                 dy = 1.0 * jj - size / 2;
@@ -259,8 +262,8 @@ errno_t AtmosphericTurbulence_make_master_turbulence_screen(
     }
     else
     {
-        for(ii = 0; ii < size; ii++)
-            for(jj = 0; jj < size; jj++)
+        for(uint32_t ii = 0; ii < size; ii++)
+            for(uint32_t jj = 0; jj < size; jj++)
             {
                 dx = 1.0 * ii - size / 2;
                 dy = 1.0 * jj - size / 2;
@@ -296,8 +299,8 @@ errno_t AtmosphericTurbulence_make_master_turbulence_screen(
     cnt = 0;
     if(data.image[ID].md[0].datatype == _DATATYPE_FLOAT)
     {
-        for(ii = 1; ii < Dlim; ii++)
-            for(jj = 1; jj < Dlim; jj++)
+        for(uint32_t ii = 1; ii < Dlim; ii++)
+            for(uint32_t jj = 1; jj < Dlim; jj++)
             {
                 value += log10(data.image[ID].array.F[jj * size + ii]) - 5.0 / 3.0 * log10(sqrt(
                              ii * ii + jj * jj));
@@ -306,8 +309,8 @@ errno_t AtmosphericTurbulence_make_master_turbulence_screen(
     }
     else
     {
-        for(ii = 1; ii < Dlim; ii++)
-            for(jj = 1; jj < Dlim; jj++)
+        for(uint32_t ii = 1; ii < Dlim; ii++)
+            for(uint32_t jj = 1; jj < Dlim; jj++)
             {
                 value += log10(data.image[ID].array.D[jj * size + ii]) - 5.0 / 3.0 * log10(sqrt(
                              ii * ii + jj * jj));
@@ -327,8 +330,8 @@ errno_t AtmosphericTurbulence_make_master_turbulence_screen(
     cnt = 0;
     if(data.image[ID].md[0].datatype == _DATATYPE_FLOAT)
     {
-        for(ii = 1; ii < Dlim; ii++)
-            for(jj = 1; jj < Dlim; jj++)
+        for(uint32_t ii = 1; ii < Dlim; ii++)
+            for(uint32_t jj = 1; jj < Dlim; jj++)
             {
                 value += log10(data.image[ID].array.F[jj * size + ii]) - 5.0 / 3.0 * log10(sqrt(
                              ii * ii + jj * jj));
@@ -337,8 +340,8 @@ errno_t AtmosphericTurbulence_make_master_turbulence_screen(
     }
     else
     {
-        for(ii = 1; ii < Dlim; ii++)
-            for(jj = 1; jj < Dlim; jj++)
+        for(uint32_t ii = 1; ii < Dlim; ii++)
+            for(uint32_t jj = 1; jj < Dlim; jj++)
             {
                 value += log10(data.image[ID].array.D[jj * size + ii]) - 5.0 / 3.0 * log10(sqrt(
                              ii * ii + jj * jj));

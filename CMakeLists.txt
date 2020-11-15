@@ -3,6 +3,7 @@ set(SOURCEFILES
 	makeHV_CN2prof.c
 	make_master_turbulence_screen.c
 	make_master_turbulence_screen_pow.c
+	make_AtmosphericTurbulence_vonKarmanWind.c
 	make_wavefront_sequence.c
 	Z_Air.c
 	)
