@@ -3,13 +3,6 @@
  * @brief   Atmospheric turbulence simulator
  *
  * Generates wavefronts\n
- *
- *  File list :
- * - AtmosphericTurbulence.c  : module main C file, includes binding code to milk
- * - AtmosphericTurbulence.h  : function prototypes to be included by other modules
- * - create_example_image.c : source code, .c file
- * - create_example_image.h : source code, .h file
- * - CMakeLists.txt         : cmake input file for module
  */
 
 
@@ -51,7 +44,7 @@
 //
 #include "make_master_turbulence_screen.h"
 #include "make_master_turbulence_screen_pow.h"
-
+#include "make_wavefront_sequence.h"
 
 
 
@@ -85,6 +78,7 @@ static errno_t init_module_CLI()
     AtmosphericTurbulence_make_master_turbulence_screen_addCLIcmd();
 	AtmosphericTurbulence_make_master_turbulence_screen_pow_addCLIcmd();
 
+	AtmosphericTurbulence_make_wavefront_sequence_addCLIcmd();
     // optional: add atexit functions here
 
     return RETURN_SUCCESS;

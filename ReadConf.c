@@ -8,195 +8,157 @@
 
 #include "CommandLineInterface/CLIcore.h"
 
+#include "COREMOD_iofits/COREMOD_iofits.h" // loadfits
 
-errno_t AtmosphericTurbulence_ReadConf()
+#include "COREMOD_tools/fileutils.h" // read_config_parameter
+
+#include "AtmosphericTurbulence_conf.h"
+
+/*
+static float readconfparam_float(
+	const char *restrict fname,
+	const char *restrict keyw
+)
+{
+	char content[200];
+	
+	read_config_parameter(fname, keyw, content);
+	
+	return atof(content);
+}
+
+
+static float readconfparam_int(
+	const char *restrict fname,
+	const char *restrict keyw
+)
+{
+	char content[200];
+	
+	read_config_parameter(fname, keyw, content);
+	
+	return atoi(content);	
+}
+*/
+
+
+
+
+errno_t AtmosphericTurbulence_ReadConf(
+    const char *restrict fnameconf,
+    ATMTURBCONF *atmturbconf
+)
 {
     char KEYWORD[200];
     char CONTENT[200];
-    
-    
-   // ------------ TURBULENCE AND ATMOSPHERE PARAMETERS -------------------------------------------
-    
-    strcpy(KEYWORD,"TURBULENCE_REF_WAVEL");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    CONF_LAMBDA = atof(CONTENT)*0.000001;
-    
-    strcpy(KEYWORD,"TURBULENCE_SEEING");
-    read_config_parameter(CONFFILE,KEYWORD,CONTENT);
-    CONF_SEEING = atof(CONTENT);
 
-    strcpy(KEYWORD,"TURBULENCE_PROF_FILE");
-    read_config_parameter(CONFFILE, KEYWORD, CONF_TURBULENCE_PROF_FILE);
- 
-    strcpy(KEYWORD,"ZENITH_ANGLE");
-    read_config_parameter(CONFFILE,KEYWORD,CONTENT);
-    CONF_ZANGLE = atof(CONTENT);
 
-    strcpy(KEYWORD,"SOURCE_XPOS");
-    read_config_parameter(CONFFILE,KEYWORD,CONTENT);
-    CONF_SOURCE_Xpos = atof(CONTENT);
+    // ------------ TURBULENCE AND ATMOSPHERE PARAMETERS -------------------------------------------
 
-    strcpy(KEYWORD,"SOURCE_YPOS");
-    read_config_parameter(CONFFILE,KEYWORD,CONTENT);
-    CONF_SOURCE_Ypos = atof(CONTENT);
+    atmturbconf->lambda = read_config_parameter_float(fnameconf,
+                          "TURBULENCE_REF_WAVEL") * 0.000001;
+    atmturbconf->seeing = read_config_parameter_float(fnameconf, "TURBULENCE_SEEING");
+    read_config_parameter(fnameconf, "TURBULENCE_PROF_FILE",
+                          atmturbconf->turbulenceprof_fname);
+    atmturbconf->zenithangle = read_config_parameter_float(fnameconf, "ZENITH_ANGLE");
+    atmturbconf->sourceXpos = read_config_parameter_float(fnameconf, "SOURCE_XPOS");
+    atmturbconf->sourceYpos = read_config_parameter_float(fnameconf, "SOURCE_YPOS");
 
- 
-    
+
     // ------------ LOW_FIDELITY OUTPUT AT REF LAMBDA ------------------------------------------------
-    
-    strcpy(KEYWORD,"WFOUTPUT");
-    if(read_config_parameter_exists(CONFFILE, KEYWORD)==1)
-    {
-        read_config_parameter(CONFFILE,KEYWORD, CONTENT);
-        CONF_WFOUTPUT = atoi(CONTENT);
-    }
-    
-    strcpy(KEYWORD,"WF_FILE_PREFIX");
-    read_config_parameter(CONFFILE,KEYWORD, CONF_WF_FILE_PREFIX);
 
-    strcpy(KEYWORD,"SHM_OUTPUT");
-    if(read_config_parameter_exists(CONFFILE, KEYWORD)==1)
+    if(read_config_parameter_exists(fnameconf, "WFOUTPUT") == 1)
     {
-        read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-        CONF_SHM_OUTPUT = atoi(CONTENT);
+        atmturbconf->flag_WFoutput = read_config_parameter_int(fnameconf, "WFOUTPUT");
+    }
+    read_config_parameter(fnameconf, "WF_FILE_PREFIX", atmturbconf->WFfileprefix);
+    if(read_config_parameter_exists(fnameconf, "SHM_OUTPUT") == 1)
+    {
+        atmturbconf->flag_SHMoutput = read_config_parameter_int(fnameconf, "SHM_OUTPUT");
     }
 
-    
+
     // ------------- HIGH FIDELITY OUTPUT WAVELENGTH ---------------------------------
     
-    strcpy(KEYWORD,"MAKE_SWAVEFRONT");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    CONF_MAKE_SWAVEFRONT = atoi(CONTENT);
-
-//    strcpy(KEYWORD,"SLAMBDA");
- //   read_config_parameter(CONFFILE, KEYWORD, CONTENT);
- //   CONF_SLAMBDA = atof(CONTENT)*0.000001;
-
-    strcpy(KEYWORD,"SWF_WRITE2DISK");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    CONF_SWF_WRITE2DISK = atoi(CONTENT);
-
-    strcpy(KEYWORD,"SWF_FILE_PREFIX");
-    read_config_parameter(CONFFILE, KEYWORD, CONF_SWF_FILE_PREFIX);
-
-    strcpy(KEYWORD,"SHM_SOUTPUT");
-    if(read_config_parameter_exists(CONFFILE, KEYWORD)==1)
+    atmturbconf->flag_SWF_make = read_config_parameter_int(fnameconf, "MAKE_SWAVEFRONT");
+    atmturbconf->flag_SWF_Wite2Disk = read_config_parameter_int(fnameconf, "SWF_WRITE2DISK");
+    read_config_parameter(fnameconf, "SWF_FILE_PREFIX", atmturbconf->SWFfileprefix);
+    if(read_config_parameter_exists(fnameconf, "SHM_SOUTPUT")==1)
     {
-        read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-        CONF_SHM_SOUTPUT = atoi(CONTENT);
+		atmturbconf->flag_SWF_SHMoutput = read_config_parameter_int(fnameconf, "SHM_SOUTPUT");
     }
-    strcpy(KEYWORD,"SHM_SPREFIX");
-    read_config_parameter(CONFFILE,KEYWORD, CONF_SHM_SPREFIX);
-
-    strcpy(KEYWORD,"SHM_SOUTPUTM");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    CONF_SHM_SOUTPUTM = atoi(CONTENT);
+    read_config_parameter(fnameconf, "SHM_SPREFIX", atmturbconf->SWFSHMprefix);
+    atmturbconf->flag_SWF_SHMouputM = read_config_parameter_int(fnameconf, "SHM_SOUTPUTM");
+  
 
 
     // ------------ OUTPUT PARAMETERS --------------------------------------------
     
-    strcpy(KEYWORD,"PUPIL_SCALE");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    CONF_PUPIL_SCALE = atof(CONTENT);
-    
-    strcpy(KEYWORD,"WFsize");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    CONF_WFsize = atol(CONTENT);
+    atmturbconf->WFsize = read_config_parameter_int(fnameconf, "WFsize");
+    atmturbconf->PupilScale = read_config_parameter_float(fnameconf, "PUPIL_SCALE");
 
- 
     
     // ------------- TIMING ---------------------------------------
     
-    strcpy(KEYWORD,"REALTIME");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    CONF_ATMWF_REALTIME = atoi(CONTENT);
-    
-    strcpy(KEYWORD,"REALTIMEFACTOR");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    CONF_ATMWF_REALTIMEFACTOR = atof(CONTENT);
-
-    strcpy(KEYWORD, "WFTIME_STEP");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    CONF_WFTIME_STEP = atof(CONTENT);
-
-    strcpy(KEYWORD, "TIME_SPAN");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    CONF_TIME_SPAN = atof(CONTENT);
-
-    strcpy(KEYWORD, "NB_TSPAN");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    CONF_NB_TSPAN = atol(CONTENT);
-
-    strcpy(KEYWORD, "SIMTDELAY");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    CONF_SIMTDELAY = atol(CONTENT);
-
-    
-    strcpy(KEYWORD, "WAITFORSEM");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    CONF_WAITFORSEM = atoi(CONTENT);
-    
-    strcpy(KEYWORD, "WAITSEMIMNAME");
-    read_config_parameter(CONFFILE, KEYWORD, CONF_WAITSEMIMNAME);
-    
+    atmturbconf->flag_RealTime  = read_config_parameter_int(fnameconf, "REALTIME");
+    atmturbconf->RealTimeFactor = read_config_parameter_float(fnameconf, "REALTIMEFACTOR");
+    atmturbconf->TimeStep       = read_config_parameter_float(fnameconf, "WFTIME_STEP");
+    atmturbconf->TimeSpanCube   = read_config_parameter_float(fnameconf, "TIME_CUBESPAN");
+    atmturbconf->NBTimeCube     = read_config_parameter_float(fnameconf, "TIME_NBCUBE");
+    atmturbconf->TimeDelayus    = read_config_parameter_int(fnameconf, "SIMTDELAY");
+    atmturbconf->flag_WaitSem   = read_config_parameter_int(fnameconf, "WAITFORSEM");
+    read_config_parameter(fnameconf, "WAITSEMIMNAME", atmturbconf->WaitSemName);
     
     
     // ------------ COMPUTATION PARAMETERS, MODES --------------------------------
     
     
-    strcpy(KEYWORD,"SKIP_EXISTING");
-    if(read_config_parameter_exists(CONFFILE,KEYWORD)==1)
+    if(read_config_parameter_exists(fnameconf, "SKIP_EXISTING")==1)
     {
-        read_config_parameter(CONFFILE,KEYWORD,CONTENT);
-        CONF_SKIP_EXISTING = 1;
+        atmturbconf->flag_SkipExisting = read_config_parameter_int(fnameconf, "SKIP_EXISTING");
     }
     else
-        CONF_SKIP_EXISTING = 0;
+    {
+        atmturbconf->flag_SkipExisting = 0;
+	}
 
-    strcpy(KEYWORD,"WF_RAW_SIZE");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    CONF_WF_RAW_SIZE = atol(CONTENT);
- 
-    strcpy(KEYWORD,"MASTER_SIZE");
-    read_config_parameter(CONFFILE, KEYWORD,CONTENT);
-    CONF_MASTER_SIZE = atol(CONTENT);
-
+	
+	atmturbconf->WFrawSize = read_config_parameter_int(fnameconf, "WF_RAW_SIZE");
+	atmturbconf->MasterSize = read_config_parameter_int(fnameconf, "MASTER_SIZE");
+	
 
 
     //  ------------ WAVEFRONT AMPLITUDE -------------------------------------------
 
-    
-    strcpy(KEYWORD,"WAVEFRONT_AMPLITUDE");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    CONF_WAVEFRONT_AMPLITUDE = atoi(CONTENT);
 
-	if(CONF_WAVEFRONT_AMPLITUDE == 1)
+	atmturbconf->flag_WFampl = read_config_parameter_int(fnameconf, "WAVEFRONT_AMPLITUDE");
+
+	if(atmturbconf->flag_WFampl == 1)
 	{
-		strcpy(KEYWORD,"FRESNEL_PROPAGATION");
-		read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-		CONF_FRESNEL_PROPAGATION = atoi(CONTENT);
+		atmturbconf->flag_FresnelProp = read_config_parameter_int(fnameconf, "FRESNEL_PROPAGATION");
 	}
 	else
-		CONF_FRESNEL_PROPAGATION = 0;
+	{
+		atmturbconf->flag_FresnelProp = 0;
+	}
+	atmturbconf->FresnelPropBin = read_config_parameter_float(fnameconf, "FRESNEL_PROPAGATION_BIN");
 		
-    strcpy(KEYWORD,"FRESNEL_PROPAGATION_BIN");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    CONF_FRESNEL_PROPAGATION_BIN = atof(CONTENT);
+	
 
     // ------------ POSTPROCESSING --------------
  
 
     strcpy(KEYWORD,"PUPIL_AMPL_FILE");
-    if(read_config_parameter_exists(CONFFILE,KEYWORD)==1)
+    if(read_config_parameter_exists(fnameconf, "PUPIL_AMPL_FILE")==1)
     {
-        read_config_parameter(CONFFILE, KEYWORD, CONTENT);
+        read_config_parameter(fnameconf, "PUPIL_AMPL_FILE", CONTENT);
         load_fits(CONTENT, "ST_pa", 1);
     }
 
     strcpy(KEYWORD,"PUPIL_PHA_FILE");
-    if(read_config_parameter_exists(CONFFILE,KEYWORD)==1)
+    if(read_config_parameter_exists(fnameconf, "PUPIL_PHA_FILE")==1)
     {
-        read_config_parameter(CONFFILE,KEYWORD,CONTENT);
+        read_config_parameter(fnameconf, "PUPIL_PHA_FILE", CONTENT);
         load_fits(CONTENT, "ST_pp", 1);
     }
 

@@ -5,6 +5,7 @@ set(SOURCEFILES
 	make_master_turbulence_screen_pow.c
 	make_AtmosphericTurbulence_vonKarmanWind.c
 	make_wavefront_sequence.c
+	ReadConf.c
 	Z_Air.c
 	)
 
@@ -14,7 +15,9 @@ set(INCLUDEFILES
 
 # list scripts that should be installed on system
 set(SCRIPTFILES
-	scripts/milk-atmturb-runturb)
+	scripts/milk-atmturb-runturb
+	scripts/milk-atmturb-mkconf
+)
 
 
 
