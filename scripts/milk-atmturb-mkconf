@@ -98,7 +98,7 @@ SITE_PRESS="0.6"                         # [atm] = [101325 Pa]
 
 SITE_H2O_METHOD=1                       # Method chosen to input water vapor content
 SITE_RH="30.0"                          # site relative humidity [%]
-SITE_TPW="0.01"                          # Site total precitipable water [mm] (only takes into account PW above SITE_ALT)
+SITE_TPW="1.00"                          # Site total precitipable water [mm] (only takes into account PW above SITE_ALT)
 SITE_PW_SCALEH="2000.0"                 # water vapor relative concentration scale height [m]
 
 # IMPORTANT NOTE: 

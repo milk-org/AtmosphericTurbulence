@@ -5,6 +5,8 @@
  *
  */
 
+#include <string.h>
+#include <stdint.h>
 
 #include "CommandLineInterface/CLIcore.h"
 
@@ -13,33 +15,6 @@
 #include "COREMOD_tools/fileutils.h" // read_config_parameter
 
 #include "AtmosphericTurbulence_conf.h"
-
-/*
-static float readconfparam_float(
-	const char *restrict fname,
-	const char *restrict keyw
-)
-{
-	char content[200];
-	
-	read_config_parameter(fname, keyw, content);
-	
-	return atof(content);
-}
-
-
-static float readconfparam_int(
-	const char *restrict fname,
-	const char *restrict keyw
-)
-{
-	char content[200];
-	
-	read_config_parameter(fname, keyw, content);
-	
-	return atoi(content);	
-}
-*/
 
 
 

@@ -297,7 +297,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
 
 
 
-
+	if(0)
     {
         double dens_N2, dens_O2, dens_Ar, dens_H2O, dens_CO2, dens_Ne, dens_He,
                dens_CH4, dens_Kr, dens_H2, dens_O3, dens_N, dens_O, dens_H; // [cm-3]
@@ -499,14 +499,6 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
             fclose(fpAtmRefrac);
         }
     }
-
-
-
-
-
-
-
-
 
 
 
