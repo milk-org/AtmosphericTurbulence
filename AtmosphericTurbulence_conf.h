@@ -68,7 +68,7 @@ typedef struct {
 	uint32_t MasterSize;         // CONF_MASTER_SIZE
 	
 	// ------------ WAVEFRONT AMPLITUDE --------------------------------
-	int     flag_WFampl;    // CONF_WAVEFRONT_AMPLITUDE
+	int     flag_WFampl;          // CONF_WAVEFRONT_AMPLITUDE
 	int     flag_FresnelProp;    // CONF_FRESNEL_PROPAGATION
 	float   FresnelPropBin;      // CONF_FRESNEL_PROPAGATION_BIN
 	

@@ -4,6 +4,7 @@ set(SOURCEFILES
 	make_master_turbulence_screen.c
 	make_master_turbulence_screen_pow.c
 	make_AtmosphericTurbulence_vonKarmanWind.c
+	AtmosphericTurbulence_prediction.c
 	make_wavefront_sequence.c
 	ReadConf.c
 	Z_Air.c
