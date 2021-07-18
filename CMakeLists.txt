@@ -1,4 +1,4 @@
-set(LIBNAME "milkatmosphericturbulence")
+set(LIBNAME "milkAtmosphericTurbulence")
 
 message("")
 message(" SRCNAME = ${SRCNAME} -> LIBNAME = ${LIBNAME}")
