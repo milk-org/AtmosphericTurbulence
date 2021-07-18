@@ -67,7 +67,7 @@ imageID make_AtmosphericTurbulence_vonKarmanWind(
 
     make_rnd("tmpg", vKsize, 1, "-gauss");
     arith_image_mult("tmpg", "tmpamp0", "tmpamp");
-    save_fits("tmpamp0", "!vKwind_tmpamp0.fits");
+    save_fits("tmpamp0", "vKwind_tmpamp0.fits");
     delete_image_ID("tmpamp0", DELETE_IMAGE_ERRMODE_WARNING);
     delete_image_ID("tmpg", DELETE_IMAGE_ERRMODE_WARNING);
     arith_set_pixel("tmpamp", 0.0, vKsize / 2, 0);

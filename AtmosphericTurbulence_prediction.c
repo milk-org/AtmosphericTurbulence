@@ -126,7 +126,7 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
     }
     if(Save == 1)
     {
-        save_fits(WFin_name, "!wfinm.fits");
+        save_fits(WFin_name, "wfinm.fits");
     }
 
 
@@ -208,7 +208,7 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
 
     if(Save == 1)
     {
-        save_fits("PFmatD", "!PFmatD.fits");
+        save_fits("PFmatD", "PFmatD.fits");
     }
     list_image_ID();
 
@@ -227,9 +227,9 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
 
     if(0)
     {
-        save_fits("PFmatD", "!test_PFmatD.fits");
-        save_fits("PFmatC", "!test_PFmatC.fits");
-        save_fits("PF_VTmat", "!test_PF_VTmat.fits");
+        save_fits("PFmatD", "test_PFmatD.fits");
+        save_fits("PFmatC", "test_PFmatC.fits");
+        save_fits("PF_VTmat", "test_PF_VTmat.fits");
 #ifdef HAVE_MAGMA
         CUDACOMP_magma_compute_SVDpseudoInverse("PFmatD", "PFmatC_magma", SVDeps,
                                                 100000, "PF_VTmat_magma", 0);
@@ -239,14 +239,14 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
 #endif
 
         list_image_ID();
-        save_fits("PFmatC_magma", "!test_PFmatC_magma.fits");
-        save_fits("PF_VTmat_magma", "!test_PF_VTmat_magma.fits");
+        save_fits("PFmatC_magma", "test_PFmatC_magma.fits");
+        save_fits("PF_VTmat_magma", "test_PF_VTmat_magma.fits");
         exit(0);
     }
 
     if(Save == 1)
     {
-        save_fits("PFmatC", "!PFmatC.fits");
+        save_fits("PFmatC", "PFmatC.fits");
     }
     IDmatC = image_ID("PFmatC");
 
@@ -266,7 +266,7 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
 
         sprintf(filtname, "PFfilt_%06ld_%03ld_%03ld", pixarray_xy[PFpix],
                 pixarray_x[PFpix], pixarray_y[PFpix]);
-        sprintf(filtfname, "!./pixfilters/PFfilt_%06ld_%03ld_%03ld.fits",
+        sprintf(filtfname, "./pixfilters/PFfilt_%06ld_%03ld_%03ld.fits",
                 pixarray_xy[PFpix], pixarray_x[PFpix], pixarray_y[PFpix]);
         create_3Dimage_ID(filtname, xsize, ysize, PForder, &ID_Pfilt);
 
@@ -542,7 +542,7 @@ imageID AtmosphericTurbulence_LinPredictor_filt_2DKernelExtract(
     {
         sprintf(filtname, "PFfilt_%06lu_%03u_%03u", pixarray_xy[PFpix],
                 pixarray_x[PFpix], pixarray_y[PFpix]);
-        sprintf(filtfname, "!./pixfilters/PFfilt_%06lu_%03u_%03u.fits",
+        sprintf(filtfname, "./pixfilters/PFfilt_%06lu_%03u_%03u.fits",
                 pixarray_xy[PFpix], pixarray_x[PFpix], pixarray_y[PFpix]);
         create_3Dimage_ID(filtname, xsize, ysize, PForder, &ID_Pfilt);
         tmp1 = 0.0;
@@ -624,7 +624,7 @@ long AtmosphericTurbulence_LinPredictor_filt_Expand(
     {
         sprintf(filtname, "PFfilt_%06lu_%03u_%03u", pixarray_xy[PFpix],
                 pixarray_x[PFpix], pixarray_y[PFpix]);
-        sprintf(filtfname, "!./pixfilters/PFfilt_%06lu_%03u_%03u.fits",
+        sprintf(filtfname, "./pixfilters/PFfilt_%06lu_%03u_%03u.fits",
                 pixarray_xy[PFpix], pixarray_x[PFpix], pixarray_y[PFpix]);
         imageID ID_Pfilt;
         create_3Dimage_ID(filtname, xsize, ysize, PForder, &ID_Pfilt);
@@ -1116,7 +1116,7 @@ int AtmosphericTurbulence_Build_LinPredictor(
 
     if(Save == 1)
     {
-        save_fits("WFP_pham", "!WFP_pham.fits");
+        save_fits("WFP_pham", "WFP_pham.fits");
     }
 
 
@@ -1198,10 +1198,10 @@ int AtmosphericTurbulence_Build_LinPredictor(
 
     if(Save == 1)
     {
-        save_fits("WFPmatA", "!WFPmatA.fits");
+        save_fits("WFPmatA", "WFPmatA.fits");
         if(GHA == 1)
         {
-            save_fits("GHAmatA", "!GHAmatA.fits");
+            save_fits("GHAmatA", "GHAmatA.fits");
         }
     }
 
@@ -1305,8 +1305,8 @@ int AtmosphericTurbulence_Build_LinPredictor(
 
         if(Save == 1)
         {
-            save_fits("GHA_UT", "!GHA_UT.fits");
-            save_fits("GHA_NT", "!GHA_NT.fits");
+            save_fits("GHA_UT", "GHA_UT.fits");
+            save_fits("GHA_NT", "GHA_NT.fits");
         }
 
         printf("Computing Matrix M\n");
@@ -1332,7 +1332,7 @@ int AtmosphericTurbulence_Build_LinPredictor(
             printf("Singular value %3u = %g\n", jj, 1.0 / val);
             data.image[ID_GHA_sval].array.F[jj] = 1.0 / val;
         }
-        save_fits("GHA_V", "!GHA_V.fits");
+        save_fits("GHA_V", "GHA_V.fits");
 
         // compute Mest
         create_2Dimage_ID("GHA_Mest", GHA_m, GHA_n, &ID_GHA_Mest);
@@ -1358,7 +1358,7 @@ int AtmosphericTurbulence_Build_LinPredictor(
             data.image[ID_GHA_WFPfilt].array.F[offset + k] =
                 data.image[ID_GHA_Mest].array.F[k];
         }
-        save_fits("GHA_WFPfilt", "!GHA_WFPfilt.fits");
+        save_fits("GHA_WFPfilt", "GHA_WFPfilt.fits");
 
     }
     //exit(0);
@@ -1369,7 +1369,7 @@ int AtmosphericTurbulence_Build_LinPredictor(
                                     "WFP_VTmat", NULL);
     if(Save == 1)
     {
-        save_fits("WFPmatC", "!WFPmatC.fits");
+        save_fits("WFPmatC", "WFPmatC.fits");
     }
     IDmatC = image_ID("WFPmatC");
 
@@ -1392,10 +1392,10 @@ int AtmosphericTurbulence_Build_LinPredictor(
     {
         char fname[STRINGMAXLEN_FILENAME];
 
-        sprintf(fname, "!WFPfilt_lag%ld_rad%ld_%03ld_%03ld.fits", WFPlag, WFP_xyrad,
+        sprintf(fname, "WFPfilt_lag%ld_rad%ld_%03ld_%03ld.fits", WFPlag, WFP_xyrad,
                 WFPiipix, WFPjjpix);
         save_fits("WFPfilt", fname);
-        save_fits("WFPfilt", "!WFPfilt.fits");
+        save_fits("WFPfilt", "WFPfilt.fits");
     }
 
     for(k = WFPlag; k < WFP_NBstep; k++)

@@ -43,6 +43,9 @@ COMPmode="1" # default: compute wavefronts
 
 
 milk << EOF
+mload milkimagegen
+mload milkstatistic
+mload milkfft
 mload milkWFpropagate
 mload milkOpticsMaterials
 mload milkAtmosphereModel

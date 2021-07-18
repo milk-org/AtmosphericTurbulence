@@ -3220,7 +3220,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
 
                             //	plim = 2.39;
 
-                            //                        save_fits("peakpha_bin", "!peakpha_bin.fits");
+                            //                        save_fits("peakpha_bin", "peakpha_bin.fits");
 
                             for(uint32_t ii2 = 0; ii2 < xsizepeakpha; ii2++)
                                 for(uint32_t jj2 = 0; jj2 < ysizepeakpha; jj2++)
@@ -3497,7 +3497,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
 
                             //	plim = 2.39;
 
-                            //                        save_fits("peakpha_bin", "!peakpha_bin.fits");
+                            //                        save_fits("peakpha_bin", "peakpha_bin.fits");
 
                             for(uint32_t ii2 = 0; ii2 < xsizepeakpha; ii2++)
                                 for(uint32_t jj2 = 0; jj2 < ysizepeakpha; jj2++)
@@ -3526,7 +3526,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
 
                         }
                         //                    printf("chiter = %ld    [%ld]  %f\n", chiter, chcnt, plim);
-                        //                      save_fits("peakpha_bin_ch", "!peakpha_bin_ch.fits");
+                        //                      save_fits("peakpha_bin_ch", "peakpha_bin_ch.fits");
 
                         if(chcnt == 0)
                         {
@@ -3540,9 +3540,9 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
 
 
                     /*          list_image_ID();
-                              save_fits("peakpha_bin", "!peakpha2_bin.fits");
-                              save_fits("peakphare_bin", "!peakpha_re_bin.fits");
-                              save_fits("peakphaim_bin", "!peakpha_im_bin.fits");
+                              save_fits("peakpha_bin", "peakpha2_bin.fits");
+                              save_fits("peakphare_bin", "peakpha_re_bin.fits");
+                              save_fits("peakphaim_bin", "peakpha_im_bin.fits");
                     */
 
                     if(WFprecision == 0)
@@ -3700,7 +3700,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
         if(atmturbconf.flag_WFoutput == 1) // WRITE REFERENCE LAMBDA
         {
             char fnameoutpha[STRINGMAXLEN_FILENAME];
-            WRITE_FILENAME(fnameoutpha, "!%s%08ld.%09ld.pha.fits", atmturbconf.WFfileprefix,
+            WRITE_FILENAME(fnameoutpha, "%s%08ld.%09ld.pha.fits", atmturbconf.WFfileprefix,
                            cubeindex, (long)(1.0e12 * SLAMBDA + 0.5));
 
             if(WFprecision == 0)
@@ -3716,7 +3716,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
             if(atmturbconf.flag_WFampl == 1)
             {
                 char fnameoutamp[STRINGMAXLEN_FILENAME];
-                WRITE_FILENAME(fnameoutamp, "!%s%08ld.%09ld.amp.fits", atmturbconf.WFfileprefix,
+                WRITE_FILENAME(fnameoutamp, "%s%08ld.%09ld.amp.fits", atmturbconf.WFfileprefix,
                                cubeindex, (long)(1.0e12 * SLAMBDA + 0.5));
 
                 if(WFprecision == 0)
@@ -3754,7 +3754,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
             fflush(stdout);
 
             char fnameoutpha[STRINGMAXLEN_FILENAME];
-            WRITE_FILENAME(fnameoutpha, "!%s%08ld.%09ld.pha.fits", atmturbconf.SWFfileprefix,
+            WRITE_FILENAME(fnameoutpha, "%s%08ld.%09ld.pha.fits", atmturbconf.SWFfileprefix,
                            cubeindex, (long)(1.0e12 * SLAMBDA + 0.5));
 
             if(WFprecision == 0)
@@ -3772,7 +3772,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
             if(atmturbconf.flag_WFampl == 1)
             {
                 char fnameoutamp[STRINGMAXLEN_FILENAME];
-                WRITE_FILENAME(fnameoutamp, "!%s%08ld.%09ld.amp.fits", atmturbconf.SWFfileprefix,
+                WRITE_FILENAME(fnameoutamp, "%s%08ld.%09ld.amp.fits", atmturbconf.SWFfileprefix,
                                cubeindex, (long)(1.0e12 * SLAMBDA + 0.5));
 
                 if(WFprecision == 0)
