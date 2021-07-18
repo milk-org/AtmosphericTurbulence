@@ -156,11 +156,11 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
 
     if(REG == 0)
     {
-        IDmatA = create_2Dimage_ID("PFmatD", NBmvec, mvecsize);
+        create_2Dimage_ID("PFmatD", NBmvec, mvecsize, &IDmatA);
     }
     else
     {
-        IDmatA = create_2Dimage_ID("PFmatD", NBmvec + mvecsize, mvecsize);
+        create_2Dimage_ID("PFmatD", NBmvec + mvecsize, mvecsize, &IDmatA);
     }
 
 
@@ -222,7 +222,7 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
     CUDACOMP_magma_compute_SVDpseudoInverse("PFmatD", "PFmatC", SVDeps, 100000,
                                             "PF_VTmat", 0);
 #else
-    linopt_compute_SVDpseudoInverse("PFmatD", "PFmatC", SVDeps, 100000, "PF_VTmat");
+    linopt_compute_SVDpseudoInverse("PFmatD", "PFmatC", SVDeps, 100000, "PF_VTmat", NULL);
 #endif
 
     if(0)
@@ -235,7 +235,7 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
                                                 100000, "PF_VTmat_magma", 0);
 #else
         linopt_compute_SVDpseudoInverse("PFmatD", "PFmatC_magma", SVDeps, 100000,
-                                        "PF_VTmat_magma");
+                                        "PF_VTmat_magma", NULL);
 #endif
 
         list_image_ID();
@@ -253,7 +253,7 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
     printf("Compute filters\n");
     fflush(stdout);
 
-    IDfiltC = create_3Dimage_ID("filtC", NBpix, NBpix, PForder);
+    create_3Dimage_ID("filtC", NBpix, NBpix, PForder, &IDfiltC);
 
 
     valfarray = (float *) malloc(sizeof(float) * NBmvec);
@@ -268,7 +268,7 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
                 pixarray_x[PFpix], pixarray_y[PFpix]);
         sprintf(filtfname, "!./pixfilters/PFfilt_%06ld_%03ld_%03ld.fits",
                 pixarray_xy[PFpix], pixarray_x[PFpix], pixarray_y[PFpix]);
-        ID_Pfilt = create_3Dimage_ID(filtname, xsize, ysize, PForder);
+        create_3Dimage_ID(filtname, xsize, ysize, PForder, &ID_Pfilt);
 
 
         // fill in valfarray
@@ -378,14 +378,14 @@ imageID AtmosphericTurbulence_LinPredictor_filt_2DKernelExtract(
 
     uint32_t xksize = 2 * krad + 1;
     uint32_t yksize = 2 * krad + 1;
-    IDkern = create_3Dimage_ID(IDkern_name, xksize, yksize, PForder);
-    IDkern_cnt = create_3Dimage_ID("kerncnt", xksize, yksize, PForder);
+    create_3Dimage_ID(IDkern_name, xksize, yksize, PForder, &IDkern);
+    create_3Dimage_ID("kerncnt", xksize, yksize, PForder, &IDkern_cnt);
 
     // extract 2D kernel
-    for(PFpix = 0; PFpix < NBpix; PFpix++) 
+    for(PFpix = 0; PFpix < NBpix; PFpix++)
     {
-		// PFpix is the pixel for which the filter is created
-		
+        // PFpix is the pixel for which the filter is created
+
         uint32_t iifilt = pixarray_x[PFpix];
         uint32_t jjfilt = pixarray_y[PFpix];
 
@@ -423,10 +423,10 @@ imageID AtmosphericTurbulence_LinPredictor_filt_2DKernelExtract(
 
 
     // expand 2D kernel into new filter
-    IDfiltC1 = create_3Dimage_ID("filtCk", NBpix, NBpix, PForder);
-    IDfiltC1cnt = create_3Dimage_ID("filtCkcnt", NBpix, NBpix, PForder);
+    create_3Dimage_ID("filtCk", NBpix, NBpix, PForder, &IDfiltC1);
+    create_3Dimage_ID("filtCkcnt", NBpix, NBpix, PForder, &IDfiltC1cnt);
 
-    IDfiltC1n = create_2Dimage_ID("filtCkn", xsize, ysize);
+    create_2Dimage_ID("filtCkn", xsize, ysize, &IDfiltC1n);
     for(PFpix = 0; PFpix < NBpix; PFpix++)
     {
         tmp1 = 0.0;
@@ -458,8 +458,8 @@ imageID AtmosphericTurbulence_LinPredictor_filt_2DKernelExtract(
 
 
     // remove offset
-    IDfiltC2 = create_3Dimage_ID("filtCk2", NBpix, NBpix, PForder);
-    IDfiltC2n = create_2Dimage_ID("filtC2n", xsize, ysize);
+    create_3Dimage_ID("filtCk2", NBpix, NBpix, PForder, &IDfiltC2);
+    create_2Dimage_ID("filtC2n", xsize, ysize, &IDfiltC2n);
     for(dt = 0; dt < PForder; dt++)
     {
         for(PFpix = 0; PFpix < NBpix; PFpix++)
@@ -544,7 +544,7 @@ imageID AtmosphericTurbulence_LinPredictor_filt_2DKernelExtract(
                 pixarray_x[PFpix], pixarray_y[PFpix]);
         sprintf(filtfname, "!./pixfilters/PFfilt_%06lu_%03u_%03u.fits",
                 pixarray_xy[PFpix], pixarray_x[PFpix], pixarray_y[PFpix]);
-        ID_Pfilt = create_3Dimage_ID(filtname, xsize, ysize, PForder);
+        create_3Dimage_ID(filtname, xsize, ysize, PForder, &ID_Pfilt);
         tmp1 = 0.0;
         for(dt = 0; dt < PForder; dt++)
             for(pix = 0; pix < NBpix; pix++)
@@ -609,19 +609,25 @@ long AtmosphericTurbulence_LinPredictor_filt_Expand(
     printf("NBpix1 = %u / %u\n", NBpix1, NBpix);
 
 
-    imageID IDnorm1 = create_2Dimage_ID("filtmap_norm1", xsize, ysize);
-    imageID IDnorm2 = create_2Dimage_ID("filtmap_norm2", xsize, ysize);
-    imageID IDtau = create_2Dimage_ID("filtmap_tau", xsize, ysize);
+    imageID IDnorm1;
+    create_2Dimage_ID("filtmap_norm1", xsize, ysize, &IDnorm1);
+
+    imageID IDnorm2;
+    create_2Dimage_ID("filtmap_norm2", xsize, ysize, &IDnorm2);
+
+    imageID IDtau;
+    create_2Dimage_ID("filtmap_tau", xsize, ysize, &IDtau);
 
 
     // expand into individual filters
     for(uint32_t PFpix = 0; PFpix < NBpix; PFpix++)
-    {		
+    {
         sprintf(filtname, "PFfilt_%06lu_%03u_%03u", pixarray_xy[PFpix],
                 pixarray_x[PFpix], pixarray_y[PFpix]);
         sprintf(filtfname, "!./pixfilters/PFfilt_%06lu_%03u_%03u.fits",
                 pixarray_xy[PFpix], pixarray_x[PFpix], pixarray_y[PFpix]);
-        imageID ID_Pfilt = create_3Dimage_ID(filtname, xsize, ysize, PForder);
+        imageID ID_Pfilt;
+        create_3Dimage_ID(filtname, xsize, ysize, PForder, &ID_Pfilt);
 
         double tau = 0.0; // effective time averaging
         double norm1 = 0.0;
@@ -686,12 +692,12 @@ long AtmosphericTurbulence_LinPredictor_filt_Expand(
 //
 int AtmosphericTurbulence_Apply_LinPredictor_Full(
     int MODE,
-    const char *restrict WFin_name,
-    const char *restrict WFmask_name,
+    const char *__restrict WFin_name,
+    const char *__restrict WFmask_name,
     int PForder,
     float PFlag,
-    const char *restrict WFoutp_name,
-    const char *restrict WFoutf_name
+    const char *__restrict WFoutp_name,
+    const char *__restrict WFoutf_name
 )
 {
     imageID ID_WFmask;
@@ -710,15 +716,19 @@ int AtmosphericTurbulence_Apply_LinPredictor_Full(
     uint32_t zsize = data.image[ID_WFin].md[0].size[2];
     uint64_t xysize = xsize * ysize;
 
-    imageID IDoutp = create_3Dimage_ID(WFoutp_name, xsize, ysize, zsize);
-    imageID IDoutf = create_3Dimage_ID(WFoutf_name, xsize, ysize, zsize);
+    imageID IDoutp;
+    create_3Dimage_ID(WFoutp_name, xsize, ysize, zsize, &IDoutp);
+
+    imageID IDoutf;
+    create_3Dimage_ID(WFoutf_name, xsize, ysize, zsize, &IDoutf);
+
     imageID IDreft = image_ID("reft");
     if(IDreft != -1)
     {
-        IDoutft = create_3Dimage_ID("outft", xsize, ysize, zsize);
-        IDoutp_res = create_3Dimage_ID("outp_res", xsize, ysize, zsize);
-        IDoutf_res = create_3Dimage_ID("outf_res", xsize, ysize, zsize);
-        IDoutl_res = create_3Dimage_ID("outl_res", xsize, ysize, zsize);
+        create_3Dimage_ID("outft", xsize, ysize, zsize, &IDoutft);
+        create_3Dimage_ID("outp_res", xsize, ysize, zsize, &IDoutp_res);
+        create_3Dimage_ID("outf_res", xsize, ysize, zsize, &IDoutf_res);
+        create_3Dimage_ID("outl_res", xsize, ysize, zsize, &IDoutl_res);
     }
 
     ID_WFmask = image_ID(WFmask_name);
@@ -757,97 +767,97 @@ int AtmosphericTurbulence_Apply_LinPredictor_Full(
         }
     }
 
-	NBpix = 0;
-	for(uint32_t ii=0;ii<xsize;ii++)
-	{
-		for(uint32_t jj=0;jj<ysize;jj++)
-		{
-			if(data.image[ID_WFmask].array.F[jj*xsize+ii] > 0.5)
-				{
-					pixarray_x[NBpix] = ii;
-					pixarray_y[NBpix] = jj;
-					pixarray_xy[NBpix] = jj*xsize+ii;
-					NBpix++;
-				}
-			}
-		}
-	printf("NBpix = %ld\n", NBpix);
-	
-	
-	
-	double alpha = PFlag - ((long) PFlag);
-	long PFlagl = (long) PFlag;
-	
-	printf("Read and Apply filters\n");
-	fflush(stdout);
-	for(long PFpix=0; PFpix<NBpix; PFpix++) 
-	{
-		char filtname[STRINGMAXLEN_IMGNAME];
-		WRITE_IMAGENAME(filtname, "PFfilt_%06lu_%03u_%03u", pixarray_xy[PFpix], pixarray_x[PFpix], pixarray_y[PFpix]);
-			
-		if(MODE==0)
-		{
-			char filtfname[STRINGMAXLEN_FULLFILENAME];
-			WRITE_FULLFILENAME(filtfname, "./pixfilters/PFfilt_%06lu_%03u_%03u.fits", pixarray_xy[PFpix], pixarray_x[PFpix], pixarray_y[PFpix]);
-			ID_Pfilt = load_fits(filtfname, filtname, 1);
-		}
-		else
-		{
-			ID_Pfilt = create_3Dimage_ID(filtname, xsize, ysize, PForder);
-
-			for(long step=0; step<PForder; step++)
-				data.image[ID_Pfilt].array.F[xysize*step + pixarray_y[PFpix]*xsize+pixarray_x[PFpix]] = 1.0/PForder;
-		}
-		
-		for(long kk=PForder; kk<zsize; kk++)
-			{
-				double valp = 0.0;
-				for(long step=0; step<PForder; step++)
-					{
-						for(uint64_t ii=0;ii<xsize*ysize;ii++)
-							valp += data.image[ID_Pfilt].array.F[xysize*step+ii]*data.image[ID_WFin].array.F[(kk-step)*xysize + ii];
-					}
-					
-				double valf = 0.0;
-				if(kk+PFlag+1<zsize)
-				{
-					valf = (1.0-alpha) * data.image[ID_WFin].array.F[(kk+PFlagl)*xysize+pixarray_xy[PFpix]] + alpha * data.image[ID_WFin].array.F[(kk+PFlagl+1)*xysize+pixarray_xy[PFpix]];
-				}
-			
-				double valft = 0.0;
-				if(kk+PFlag+1<zsize)
-				{
-					valft = (1.0-alpha) * data.image[IDreft].array.F[(kk+PFlagl)*xysize+pixarray_xy[PFpix]] + alpha * data.image[IDreft].array.F[(kk+PFlagl+1)*xysize+pixarray_xy[PFpix]];
-				}
-		
-		
-				data.image[IDoutp].array.F[kk*xysize+pixarray_xy[PFpix]] = valp;
-				data.image[IDoutf].array.F[kk*xysize+pixarray_xy[PFpix]] = valf;
-				
-				if(IDreft!=-1)
-				{					
-					valft = 0.0;
-					if(kk+PFlag+1<zsize)
-						valft = (1.0-alpha) * data.image[IDreft].array.F[(kk+PFlagl)*xysize+pixarray_xy[PFpix]] + alpha * data.image[IDreft].array.F[(kk+PFlagl+1)*xysize+pixarray_xy[PFpix]];
-					data.image[IDoutft].array.F[kk*xysize+pixarray_xy[PFpix]] = valft;
-
-					data.image[IDoutp_res].array.F[kk*xysize+pixarray_xy[PFpix]] = valp-valft;					
-					data.image[IDoutf_res].array.F[kk*xysize+pixarray_xy[PFpix]] = valf-valft;		
-					data.image[IDoutl_res].array.F[kk*xysize+pixarray_xy[PFpix]] = data.image[ID_WFin].array.F[kk*xysize + pixarray_xy[PFpix]]-valft;					
-				}
-			}
-		delete_image_ID(filtname);
-	
-	}	
-	
-	
+    NBpix = 0;
+    for(uint32_t ii=0; ii<xsize; ii++)
+    {
+        for(uint32_t jj=0; jj<ysize; jj++)
+        {
+            if(data.image[ID_WFmask].array.F[jj*xsize+ii] > 0.5)
+            {
+                pixarray_x[NBpix] = ii;
+                pixarray_y[NBpix] = jj;
+                pixarray_xy[NBpix] = jj*xsize+ii;
+                NBpix++;
+            }
+        }
+    }
+    printf("NBpix = %ld\n", NBpix);
 
 
-	free(pixarray_x);
-	free(pixarray_y);
-	free(pixarray_xy);
 
-	return(0);
+    double alpha = PFlag - ((long) PFlag);
+    long PFlagl = (long) PFlag;
+
+    printf("Read and Apply filters\n");
+    fflush(stdout);
+    for(long PFpix=0; PFpix<NBpix; PFpix++)
+    {
+        char filtname[STRINGMAXLEN_IMGNAME];
+        WRITE_IMAGENAME(filtname, "PFfilt_%06lu_%03u_%03u", pixarray_xy[PFpix], pixarray_x[PFpix], pixarray_y[PFpix]);
+
+        if(MODE==0)
+        {
+            char filtfname[STRINGMAXLEN_FULLFILENAME];
+            WRITE_FULLFILENAME(filtfname, "./pixfilters/PFfilt_%06lu_%03u_%03u.fits", pixarray_xy[PFpix], pixarray_x[PFpix], pixarray_y[PFpix]);
+            load_fits(filtfname, filtname, LOADFITS_ERRMODE_WARNING, &ID_Pfilt);
+        }
+        else
+        {
+            create_3Dimage_ID(filtname, xsize, ysize, PForder, &ID_Pfilt);
+
+            for(long step=0; step<PForder; step++)
+                data.image[ID_Pfilt].array.F[xysize*step + pixarray_y[PFpix]*xsize+pixarray_x[PFpix]] = 1.0/PForder;
+        }
+
+        for(long kk=PForder; kk<zsize; kk++)
+        {
+            double valp = 0.0;
+            for(long step=0; step<PForder; step++)
+            {
+                for(uint64_t ii=0; ii<xsize*ysize; ii++)
+                    valp += data.image[ID_Pfilt].array.F[xysize*step+ii]*data.image[ID_WFin].array.F[(kk-step)*xysize + ii];
+            }
+
+            double valf = 0.0;
+            if(kk+PFlag+1<zsize)
+            {
+                valf = (1.0-alpha) * data.image[ID_WFin].array.F[(kk+PFlagl)*xysize+pixarray_xy[PFpix]] + alpha * data.image[ID_WFin].array.F[(kk+PFlagl+1)*xysize+pixarray_xy[PFpix]];
+            }
+
+            double valft = 0.0;
+            if(kk+PFlag+1<zsize)
+            {
+                valft = (1.0-alpha) * data.image[IDreft].array.F[(kk+PFlagl)*xysize+pixarray_xy[PFpix]] + alpha * data.image[IDreft].array.F[(kk+PFlagl+1)*xysize+pixarray_xy[PFpix]];
+            }
+
+
+            data.image[IDoutp].array.F[kk*xysize+pixarray_xy[PFpix]] = valp;
+            data.image[IDoutf].array.F[kk*xysize+pixarray_xy[PFpix]] = valf;
+
+            if(IDreft!=-1)
+            {
+                valft = 0.0;
+                if(kk+PFlag+1<zsize)
+                    valft = (1.0-alpha) * data.image[IDreft].array.F[(kk+PFlagl)*xysize+pixarray_xy[PFpix]] + alpha * data.image[IDreft].array.F[(kk+PFlagl+1)*xysize+pixarray_xy[PFpix]];
+                data.image[IDoutft].array.F[kk*xysize+pixarray_xy[PFpix]] = valft;
+
+                data.image[IDoutp_res].array.F[kk*xysize+pixarray_xy[PFpix]] = valp-valft;
+                data.image[IDoutf_res].array.F[kk*xysize+pixarray_xy[PFpix]] = valf-valft;
+                data.image[IDoutl_res].array.F[kk*xysize+pixarray_xy[PFpix]] = data.image[ID_WFin].array.F[kk*xysize + pixarray_xy[PFpix]]-valft;
+            }
+        }
+        delete_image_ID(filtname, DELETE_IMAGE_ERRMODE_WARNING);
+
+    }
+
+
+
+
+    free(pixarray_x);
+    free(pixarray_y);
+    free(pixarray_xy);
+
+    return(0);
 }
 
 
@@ -876,7 +886,7 @@ int AtmosphericTurbulence_Build_LinPredictor(
 
     imageID IDpha_measured;
     imageID IDpupamp;
-    
+
     long frame;
     long NBFRAMES;
 //    long WFPxsize, WFPysize;
@@ -958,19 +968,19 @@ int AtmosphericTurbulence_Build_LinPredictor(
     printf("NOISE      = %f\n", WFphaNoise);
     fflush(stdout);
 
-	ATMTURBCONF atmturbconf;
+    ATMTURBCONF atmturbconf;
     AtmosphericTurbulence_ReadConf("WFsim.conf", &atmturbconf);
 
     // select center pixel
     long ii0 = WFPiipix;
     long jj0 = WFPjjpix;
 
-    
+
     uint32_t WFPxsize = 1 + 2 * WFP_xyrad;
     uint32_t WFPysize = 1 + 2 * WFP_xyrad;
     printf("WFP_xyrad = %ld\n", WFP_xyrad);
-    IDpha_measured = create_3Dimage_ID("WFP_pham", WFPxsize, WFPysize, NB_WFstep);
-	
+    create_3Dimage_ID("WFP_pham", WFPxsize, WFPysize, NB_WFstep, &IDpha_measured);
+
 
     IDpupamp = image_ID("ST_pa");
     if(IDpupamp == -1)
@@ -1005,12 +1015,12 @@ int AtmosphericTurbulence_Build_LinPredictor(
         // m<n
         GHA_m = 1;
         GHA_n = WFPxsize * WFPysize * (WFP_NBstep - WFPlag);
-        ID_GHA_x = create_2Dimage_ID("GHA_x", GHA_n, 1); // input vector
-        ID_GHA_y = create_2Dimage_ID("GHA_y", GHA_m, 1); // output vector
-        ID_GHA_z = create_2Dimage_ID("GHA_z", GHA_m, 1); // z = UT y
-        ID_GHA_UT = create_2Dimage_ID("GHA_UT", GHA_m, GHA_m);
-        ID_GHA_NT = create_2Dimage_ID("GHA_NT", GHA_m, GHA_n);  // m x n matrix
-        ID_GHA_zzT = create_2Dimage_ID("GHA_zzT", GHA_m, GHA_m);  // m x m matrix
+        create_2Dimage_ID("GHA_x", GHA_n, 1, &ID_GHA_x); // input vector
+        create_2Dimage_ID("GHA_y", GHA_m, 1, &ID_GHA_y); // output vector
+        create_2Dimage_ID("GHA_z", GHA_m, 1, &ID_GHA_z); // z = UT y
+        create_2Dimage_ID("GHA_UT", GHA_m, GHA_m, &ID_GHA_UT);
+        create_2Dimage_ID("GHA_NT", GHA_m, GHA_n, &ID_GHA_NT);  // m x n matrix
+        create_2Dimage_ID("GHA_zzT", GHA_m, GHA_m, &ID_GHA_zzT);  // m x m matrix
 
 
         // initialization: set GHA_UT to Identity square matrix
@@ -1045,21 +1055,21 @@ int AtmosphericTurbulence_Build_LinPredictor(
     cntval = 0.0;
     while(k < NB_WFstep)
     {
-		char fnamepha[STRINGMAXLEN_FILENAME];
+        char fnamepha[STRINGMAXLEN_FILENAME];
         char fnameamp[STRINGMAXLEN_FILENAME];
-        
+
         printf("\r %4ld/%4ld   tspan = %4ld   ", k, NB_WFstep, tspan);
         fflush(stdout);
         //        printf("%ld/%ld\n", tspan, CONF_NB_TSPAN);
-            
-        WRITE_FILENAME(fnamepha, "%s%08ld.%09ld.pha.fits", atmturbconf.SWFfileprefix, tspan,
-                (long)(1.0e12 * SLAMBDA + 0.5));
-        
-        WRITE_FILENAME(fnameamp, "%s%08ld.%09ld.amp.fits", atmturbconf.SWFfileprefix, tspan,
-                (long)(1.0e12 * SLAMBDA + 0.5));
 
-        
-        IDpha = load_fits(fnamepha, "wfpha", 1);
+        WRITE_FILENAME(fnamepha, "%s%08ld.%09ld.pha.fits", atmturbconf.SWFfileprefix, tspan,
+                       (long)(1.0e12 * SLAMBDA + 0.5));
+
+        WRITE_FILENAME(fnameamp, "%s%08ld.%09ld.amp.fits", atmturbconf.SWFfileprefix, tspan,
+                       (long)(1.0e12 * SLAMBDA + 0.5));
+
+
+        load_fits(fnamepha, "wfpha", LOADFITS_ERRMODE_WARNING, &IDpha);
 
         for(frame = 0; frame < NBFRAMES; frame++)
         {
@@ -1094,7 +1104,7 @@ int AtmosphericTurbulence_Build_LinPredictor(
             }
             k++;
         }
-        delete_image_ID("wfpha");
+        delete_image_ID("wfpha", DELETE_IMAGE_ERRMODE_WARNING);
         tspan++;
     }
 
@@ -1148,7 +1158,7 @@ int AtmosphericTurbulence_Build_LinPredictor(
     mvecsize = l;
 
 
-    IDmatA = create_2Dimage_ID("WFPmatA", NBmvec, mvecsize);
+    create_2Dimage_ID("WFPmatA", NBmvec, mvecsize, &IDmatA);
     // each column is a measurement
     // m index is measurement
     // l index is pixel
@@ -1169,7 +1179,7 @@ int AtmosphericTurbulence_Build_LinPredictor(
     if(GHA == 1)
     {
         // for GHA: compute differences
-        ID_GHA_matA = create_2Dimage_ID("GHAmatA", NBmvec, mvecsize);
+        create_2Dimage_ID("GHAmatA", NBmvec, mvecsize, &ID_GHA_matA);
         for(k = 0; k < NB_WFstep; k++)
         {
             k1 = k + 50; // 50 frames offset
@@ -1303,8 +1313,8 @@ int AtmosphericTurbulence_Build_LinPredictor(
         fflush(stdout);
 
         // separate vectors V and singular values
-        ID_GHA_V = create_2Dimage_ID("GHA_V", GHA_n, GHA_m);
-        ID_GHA_sval = create_2Dimage_ID("GHA_sval", GHA_m, 1);
+        create_2Dimage_ID("GHA_V", GHA_n, GHA_m, &ID_GHA_V);
+        create_2Dimage_ID("GHA_sval", GHA_m, 1, &ID_GHA_sval);
         for(uint32_t jj = 0; jj < GHA_m; jj++)
         {
             val = 0.0;
@@ -1325,7 +1335,7 @@ int AtmosphericTurbulence_Build_LinPredictor(
         save_fits("GHA_V", "!GHA_V.fits");
 
         // compute Mest
-        ID_GHA_Mest = create_2Dimage_ID("GHA_Mest", GHA_m, GHA_n);
+        create_2Dimage_ID("GHA_Mest", GHA_m, GHA_n, &ID_GHA_Mest);
 
         for(uint32_t ll = 0; ll < GHA_m; ll++) // singular value index
         {
@@ -1340,8 +1350,8 @@ int AtmosphericTurbulence_Build_LinPredictor(
         }
 
 
-        ID_GHA_WFPfilt = create_3Dimage_ID("GHA_WFPfilt", WFPxsize, WFPysize,
-                                           WFP_NBstep);
+        create_3Dimage_ID("GHA_WFPfilt", WFPxsize, WFPysize,
+                          WFP_NBstep, &ID_GHA_WFPfilt);
         offset = WFPxsize * WFPysize * WFPlag;
         for(k = 0; k < WFPxsize * WFPysize * (WFP_NBstep - WFPlag); k++)
         {
@@ -1356,14 +1366,14 @@ int AtmosphericTurbulence_Build_LinPredictor(
 
 
     linopt_compute_SVDpseudoInverse("WFPmatA", "WFPmatC", SVDeps, 10000,
-                                    "WFP_VTmat");
+                                    "WFP_VTmat", NULL);
     if(Save == 1)
     {
         save_fits("WFPmatC", "!WFPmatC.fits");
     }
     IDmatC = image_ID("WFPmatC");
 
-    ID_WFPfilt = create_3Dimage_ID("WFPfilt", WFPxsize, WFPysize, WFP_NBstep);
+    create_3Dimage_ID("WFPfilt", WFPxsize, WFPysize, WFP_NBstep, &ID_WFPfilt);
 
     for(l = 0; l < mvecsize; l++)
     {
@@ -1378,15 +1388,15 @@ int AtmosphericTurbulence_Build_LinPredictor(
         data.image[ID_WFPfilt].array.F[WFPxsize * WFPysize * mvecdz[l] + WFPxsize *
                                        (mvecdy[l] + WFP_xyrad) + (mvecdx[l] + WFP_xyrad)] =  val;
     }
-    
+
     {
-		char fname[STRINGMAXLEN_FILENAME];
-    
-    sprintf(fname, "!WFPfilt_lag%ld_rad%ld_%03ld_%03ld.fits", WFPlag, WFP_xyrad,
-            WFPiipix, WFPjjpix);
-    save_fits("WFPfilt", fname);
-    save_fits("WFPfilt", "!WFPfilt.fits");
-	}
+        char fname[STRINGMAXLEN_FILENAME];
+
+        sprintf(fname, "!WFPfilt_lag%ld_rad%ld_%03ld_%03ld.fits", WFPlag, WFP_xyrad,
+                WFPiipix, WFPjjpix);
+        save_fits("WFPfilt", fname);
+        save_fits("WFPfilt", "!WFPfilt.fits");
+    }
 
     for(k = WFPlag; k < WFP_NBstep; k++)
     {

@@ -39,7 +39,7 @@ imageID make_AtmosphericTurbulence_vonKarmanWind(
     double sigmav;
     //double sigmaw;
 
-    IDc = create_3Dimage_ID(IDout_name, vKsize, 1, 3);
+    create_3Dimage_ID(IDout_name, vKsize, 1, 3, &IDc);
     sigmau = sigmawind;
     sigmav = sigmawind;
     //sigmaw = sigmawind;
@@ -47,14 +47,14 @@ imageID make_AtmosphericTurbulence_vonKarmanWind(
     // longitudinal (u)
     make_rnd("tmppha0", vKsize, 1, "");
     arith_image_cstmult("tmppha0", 2.0 * PI, "tmppha");
-    delete_image_ID("tmppha0");
+    delete_image_ID("tmppha0", DELETE_IMAGE_ERRMODE_WARNING);
 
     printf("vK wind outer scale = %f m\n", Lwind);
     printf("pixscale            = %f m\n", pixscale);
     printf("Image size          = %f m\n", vKsize * pixscale);
 
 
-    ID = create_2Dimage_ID("tmpamp0", vKsize, 1);
+    create_2Dimage_ID("tmpamp0", vKsize, 1, &ID);
     for(long ii = 0; ii < vKsize; ii++)
     {
         dx = 1.0 * ii - vKsize / 2;
@@ -68,18 +68,18 @@ imageID make_AtmosphericTurbulence_vonKarmanWind(
     make_rnd("tmpg", vKsize, 1, "-gauss");
     arith_image_mult("tmpg", "tmpamp0", "tmpamp");
     save_fits("tmpamp0", "!vKwind_tmpamp0.fits");
-    delete_image_ID("tmpamp0");
-    delete_image_ID("tmpg");
+    delete_image_ID("tmpamp0", DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID("tmpg", DELETE_IMAGE_ERRMODE_WARNING);
     arith_set_pixel("tmpamp", 0.0, vKsize / 2, 0);
     mk_complex_from_amph("tmpamp", "tmppha", "tmpc", 0);
-    delete_image_ID("tmpamp");
-    delete_image_ID("tmppha");
+    delete_image_ID("tmpamp", DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID("tmppha", DELETE_IMAGE_ERRMODE_WARNING);
     permut("tmpc");
     do2dfft("tmpc", "tmpcf");
-    delete_image_ID("tmpc");
+    delete_image_ID("tmpc", DELETE_IMAGE_ERRMODE_WARNING);
     mk_reim_from_complex("tmpcf", "tmpo1", "tmpo2", 0);
-    delete_image_ID("tmpcf");
-    delete_image_ID("tmpo2");
+    delete_image_ID("tmpcf", DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID("tmpo2", DELETE_IMAGE_ERRMODE_WARNING);
     ID = image_ID("tmpo1");
     rms = 0.0;
     for(uint32_t ii = 0; ii < vKsize; ii++)
@@ -92,15 +92,15 @@ imageID make_AtmosphericTurbulence_vonKarmanWind(
     {
         data.image[IDc].array.F[ii] = data.image[ID].array.F[ii] / rms * sigmau;
     }
-    delete_image_ID("tmpo1");
+    delete_image_ID("tmpo1", DELETE_IMAGE_ERRMODE_WARNING);
 
 
     // tangential (v)
     make_rnd("tmppha0", vKsize, 1, "");
     arith_image_cstmult("tmppha0", 2.0 * PI, "tmppha");
-    delete_image_ID("tmppha0");
+    delete_image_ID("tmppha0", DELETE_IMAGE_ERRMODE_WARNING);
 
-    ID = create_2Dimage_ID("tmpamp0", vKsize, 1);
+    create_2Dimage_ID("tmpamp0", vKsize, 1, &ID);
     for(uint32_t ii = 0; ii < vKsize; ii++)
     {
         dx = 1.0 * ii - vKsize / 2;
@@ -112,18 +112,18 @@ imageID make_AtmosphericTurbulence_vonKarmanWind(
     }
     make_rnd("tmpg", vKsize, 1, "-gauss");
     arith_image_mult("tmpg", "tmpamp0", "tmpamp");
-    delete_image_ID("tmpamp0");
-    delete_image_ID("tmpg");
+    delete_image_ID("tmpamp0", DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID("tmpg", DELETE_IMAGE_ERRMODE_WARNING);
     arith_set_pixel("tmpamp", 0.0, vKsize / 2, 0);
     mk_complex_from_amph("tmpamp", "tmppha", "tmpc", 0);
-    delete_image_ID("tmpamp");
-    delete_image_ID("tmppha");
+    delete_image_ID("tmpamp", DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID("tmppha", DELETE_IMAGE_ERRMODE_WARNING);
     permut("tmpc");
     do2dfft("tmpc", "tmpcf");
-    delete_image_ID("tmpc");
+    delete_image_ID("tmpc", DELETE_IMAGE_ERRMODE_WARNING);
     mk_reim_from_complex("tmpcf", "tmpo1", "tmpo2", 0);
-    delete_image_ID("tmpcf");
-    delete_image_ID("tmpo2");
+    delete_image_ID("tmpcf", DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID("tmpo2", DELETE_IMAGE_ERRMODE_WARNING);
     ID = image_ID("tmpo1");
     rms = 0.0;
     for(uint32_t ii = 0; ii < vKsize; ii++)
@@ -137,7 +137,7 @@ imageID make_AtmosphericTurbulence_vonKarmanWind(
         data.image[IDc].array.F[vKsize + ii] = data.image[ID].array.F[ii] / rms *
                                                sigmav;
     }
-    delete_image_ID("tmpo1");
+    delete_image_ID("tmpo1", DELETE_IMAGE_ERRMODE_WARNING);
 
 
 
@@ -145,9 +145,9 @@ imageID make_AtmosphericTurbulence_vonKarmanWind(
     // vertical (w)
     make_rnd("tmppha0", vKsize, 1, "");
     arith_image_cstmult("tmppha0", 2.0 * PI, "tmppha");
-    delete_image_ID("tmppha0");
+    delete_image_ID("tmppha0", DELETE_IMAGE_ERRMODE_WARNING);
 
-    ID = create_2Dimage_ID("tmpamp0", vKsize, 1);
+    create_2Dimage_ID("tmpamp0", vKsize, 1, &ID);
     for(uint32_t ii = 0; ii < vKsize; ii++)
     {
         dx = 1.0 * ii - size / 2;
@@ -159,18 +159,18 @@ imageID make_AtmosphericTurbulence_vonKarmanWind(
     }
     make_rnd("tmpg", vKsize, 1, "-gauss");
     arith_image_mult("tmpg", "tmpamp0", "tmpamp");
-    delete_image_ID("tmpamp0");
-    delete_image_ID("tmpg");
+    delete_image_ID("tmpamp0", DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID("tmpg", DELETE_IMAGE_ERRMODE_WARNING);
     arith_set_pixel("tmpamp", 0.0, vKsize / 2, 0);
     mk_complex_from_amph("tmpamp", "tmppha", "tmpc", 0);
-    delete_image_ID("tmpamp");
-    delete_image_ID("tmppha");
+    delete_image_ID("tmpamp", DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID("tmppha", DELETE_IMAGE_ERRMODE_WARNING);
     permut("tmpc");
     do2dfft("tmpc", "tmpcf");
-    delete_image_ID("tmpc");
+    delete_image_ID("tmpc", DELETE_IMAGE_ERRMODE_WARNING);
     mk_reim_from_complex("tmpcf", "tmpo1", "tmpo2", 0);
-    delete_image_ID("tmpcf");
-    delete_image_ID("tmpo2");
+    delete_image_ID("tmpcf", DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID("tmpo2", DELETE_IMAGE_ERRMODE_WARNING);
     ID = image_ID("tmpo1");
     rms = 0.0;
     for(uint32_t ii = 0; ii < vKsize; ii++)
@@ -184,7 +184,7 @@ imageID make_AtmosphericTurbulence_vonKarmanWind(
         data.image[IDc].array.F[vKsize * 2 + ii] = data.image[ID].array.F[ii] / rms *
                 sigmav;
     }
-    delete_image_ID("tmpo1");
+    delete_image_ID("tmpo1", DELETE_IMAGE_ERRMODE_WARNING);
 
 
 

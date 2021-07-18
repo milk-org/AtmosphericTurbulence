@@ -1,3 +1,8 @@
+set(LIBNAME "milkatmosphericturbulence")
+
+message("")
+message(" SRCNAME = ${SRCNAME} -> LIBNAME = ${LIBNAME}")
+
 # list source files (.c) other than modulename.c
 set(SOURCEFILES
 	makeHV_CN2prof.c
@@ -20,10 +25,12 @@ set(SCRIPTFILES
 	scripts/milk-atmturb-mkconf
 )
 
+set(LINKLIBS
+	CLIcore
+)
 
 
-
-# DEFAULT SETTINGS 
+# DEFAULT SETTINGS
 # Do not change unless needed
 # =====================================================================
 
@@ -33,27 +40,19 @@ string(REPLACE "/" " " NAME1 ${NAME0})
 string(REGEX MATCH "[a-zA-Z0-9_]+$" SRCNAME "${NAME0}")
 message(" SRCNAME = ${SRCNAME}")
 
-# LIBNAME constructed by removing spaces
-string(REPLACE "_" "" LIBNAME "${PROJECT_NAME}${SRCNAME}")
-message(" LIBNAME = ${LIBNAME}")
-
-
-
 project(lib_${LIBNAME}_project)
-
-include_directories ("${PROJECT_SOURCE_DIR}/src")
-include_directories ("${PROJECT_SOURCE_DIR}/..")
-
 
 # Library can be compiled from multiple source files
 # Convention: the main souce file is named <libname>.c
-# 
+#
 add_library(${LIBNAME} SHARED ${SRCNAME}.c ${SOURCEFILES})
+
+target_include_directories(${LIBNAME} PUBLIC ${PROJECT_SOURCE_DIR}/.. ${CMAKE_CURRENT_SOURCE_DIR})
+
+target_link_libraries(${LIBNAME} PRIVATE ${LINKLIBS})
 
 install(TARGETS ${LIBNAME} DESTINATION lib)
 install(FILES ${SRCNAME}.h ${INCLUDEFILES} DESTINATION include/${SRCNAME})
-
-install(PROGRAMS
-	${SCRIPTFILES}
-	DESTINATION bin)
+install(FILES ${INCLUDEFILES} DESTINATION include/${SRCNAME})
+install(PROGRAMS ${SCRIPTFILES} DESTINATION bin)
 

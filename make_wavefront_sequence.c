@@ -147,7 +147,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
 )
 {
     long naxes_MASTER[2];
-    
+
     //long master;
     long NBMASTERS;
     imageID *ID_TM;
@@ -172,7 +172,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
     imageID IDout_sarray_amp;
     complex_float *sarray;
     complex_double *sarray_double;
-    
+
     double Nlambda, Nslambda, l;
 
 
@@ -213,7 +213,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
     double *SLAYER_ALT;
     double *SLAYER_CN2;
     long NBSLAYERS;
-    
+
     int pfactor = 1;
     //   float OuterScale;
 
@@ -235,7 +235,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
     uint32_t xsizepeakpha;
     uint32_t ysizepeakpha;
 
-    
+
     double pcoeff2 = 0.15;
 
 
@@ -272,11 +272,11 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
     fflush(stdout);
 
 
-	ATMTURBCONF atmturbconf;
-	
+    ATMTURBCONF atmturbconf;
+
     AtmosphericTurbulence_ReadConf( ATMCONFFILE, &atmturbconf );
-    
-    
+
+
     naxesout[0] = atmturbconf.WFsize;
     naxesout[1] = atmturbconf.WFsize;
     naxes[0] = atmturbconf.WFrawSize;
@@ -291,13 +291,13 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
     // load RIA (Refractive index and Absorption) files if available
     ATMOSPHERE_MODEL atm = AtmosphereModel_Create_from_CONF(ATMCONFFILE,
                            slambdaum * 1e-6);
-                           
-	DEBUG_TRACEPOINT("Atmosphere model completed");
+
+    DEBUG_TRACEPOINT("Atmosphere model completed");
 
 
 
 
-	if(0)
+    if(0)
     {
         double dens_N2, dens_O2, dens_Ar, dens_H2O, dens_CO2, dens_Ne, dens_He,
                dens_CH4, dens_Kr, dens_H2, dens_O3, dens_N, dens_O, dens_H; // [cm-3]
@@ -535,7 +535,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
     //printf("method 1 : %f %f\n", Nlambda, Nslambda);
 
 
-	double Scoeff;
+    double Scoeff;
     {
         // compute Scoeff
         RIAvalue riav;
@@ -563,32 +563,32 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
     //  pfactor = naxes[0]/CONF_WFsize;
     //pfactor = 1;
 
-/*
-    contraction_factor = 4;
-    if(naxes[0] / CONF_WFsize == 1)
-    {
-        contraction_factor = 0;
-    }
-    if(naxes[0] / CONF_WFsize == 2)
-    {
-        contraction_factor = 1;
-    }
-    if(naxes[0] / CONF_WFsize == 4)
-    {
-        contraction_factor = 2;
-    }
-    if(naxes[0] / CONF_WFsize == 8)
-    {
-        contraction_factor = 3;
-    }
+    /*
+        contraction_factor = 4;
+        if(naxes[0] / CONF_WFsize == 1)
+        {
+            contraction_factor = 0;
+        }
+        if(naxes[0] / CONF_WFsize == 2)
+        {
+            contraction_factor = 1;
+        }
+        if(naxes[0] / CONF_WFsize == 4)
+        {
+            contraction_factor = 2;
+        }
+        if(naxes[0] / CONF_WFsize == 8)
+        {
+            contraction_factor = 3;
+        }
 
-    if(contraction_factor == 4)
-    {
-        printf("ERROR: unknown contraction factor\n");
-        fflush(stdout);
-        exit(0);
-    }
-*/
+        if(contraction_factor == 4)
+        {
+            printf("ERROR: unknown contraction factor\n");
+            fflush(stdout);
+            exit(0);
+        }
+    */
 
 
     /*  ID=image_ID("ST_pa");*/
@@ -609,14 +609,14 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
     // OUTPUT ARRAYS
     if(WFprecision == 0)   // single precision
     {
-        IDout_array_pha = create_3Dimage_ID("outarraypha", naxesout[0], naxesout[1],
-                                            naxesout[2]);
-        IDout_array_amp = create_3Dimage_ID("outarrayamp", naxesout[0], naxesout[1],
-                                            naxesout[2]);
-        IDout_sarray_pha = create_3Dimage_ID("outsarraypha", naxesout[0], naxesout[1],
-                                             naxesout[2]);
-        IDout_sarray_amp = create_3Dimage_ID("outsarrayamp", naxesout[0], naxesout[1],
-                                             naxesout[2]);
+        create_3Dimage_ID("outarraypha", naxesout[0], naxesout[1],
+                          naxesout[2], &IDout_array_pha);
+        create_3Dimage_ID("outarrayamp", naxesout[0], naxesout[1],
+                          naxesout[2], &IDout_array_amp);
+        create_3Dimage_ID("outsarraypha", naxesout[0], naxesout[1],
+                          naxesout[2], &IDout_sarray_pha);
+        create_3Dimage_ID("outsarrayamp", naxesout[0], naxesout[1],
+                          naxesout[2], &IDout_sarray_amp);
         for(uint64_t ii = 0; ii < naxesout[0]*naxesout[1]*naxesout[2]; ii++)
         {
             data.image[IDout_array_amp].array.F[ii] = 1.0;
@@ -628,14 +628,14 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
     }
     else // double precision
     {
-        IDout_array_pha = create_3Dimage_ID_double("outarraypha", naxesout[0],
-                          naxesout[1], naxesout[2]);
-        IDout_array_amp = create_3Dimage_ID_double("outarrayamp", naxesout[0],
-                          naxesout[1], naxesout[2]);
-        IDout_sarray_pha = create_3Dimage_ID_double("outsarraypha", naxesout[0],
-                           naxesout[1], naxesout[2]);
-        IDout_sarray_amp = create_3Dimage_ID_double("outsarrayamp", naxesout[0],
-                           naxesout[1], naxesout[2]);
+        create_3Dimage_ID_double("outarraypha", naxesout[0],
+                                 naxesout[1], naxesout[2], &IDout_array_pha);
+        create_3Dimage_ID_double("outarrayamp", naxesout[0],
+                                 naxesout[1], naxesout[2], &IDout_array_amp);
+        create_3Dimage_ID_double("outsarraypha", naxesout[0],
+                                 naxesout[1], naxesout[2], &IDout_sarray_pha);
+        create_3Dimage_ID_double("outsarrayamp", naxesout[0],
+                                 naxesout[1], naxesout[2], &IDout_sarray_amp);
         for(uint64_t ii = 0; ii < naxesout[0]*naxesout[1]*naxesout[2]; ii++)
         {
             data.image[IDout_array_amp].array.D[ii] = 1.0;
@@ -657,34 +657,34 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
     naxes_MASTER[0] = atmturbconf.MasterSize;
     naxes_MASTER[1] = atmturbconf.MasterSize;
 
-	{
-    long master = 0;
-    int stop = 1;
-    while(stop)
     {
-        char fnamemasterwf[STRINGMAXLEN_FILENAME];
-        if(WFprecision == 0)
+        long master = 0;
+        int stop = 1;
+        while(stop)
         {
-            WRITE_FILENAME(fnamemasterwf, "t%03ld_%ld_f.fits", master, (long) atmturbconf.MasterSize);
+            char fnamemasterwf[STRINGMAXLEN_FILENAME];
+            if(WFprecision == 0)
+            {
+                WRITE_FILENAME(fnamemasterwf, "t%03ld_%ld_f.fits", master, (long) atmturbconf.MasterSize);
+            }
+            else
+            {
+                WRITE_FILENAME(fnamemasterwf, "t%03ld_%ld_d.fits", master, (long) atmturbconf.MasterSize);
+            }
+            if(!file_exists(fnamemasterwf))
+            {
+                stop = 0;
+            }
+            else
+            {
+                master++;
+            }
         }
-        else
-        {
-            WRITE_FILENAME(fnamemasterwf, "t%03ld_%ld_d.fits", master, (long) atmturbconf.MasterSize);
-        }
-        if(!file_exists(fnamemasterwf))
-        {
-            stop = 0;
-        }
-        else
-        {
-            master++;
-        }
-    }
 
-    NBMASTERS = master;
-    printf("%ld turbulence master files found\n", NBMASTERS);
-    fflush(stdout);
-	}
+        NBMASTERS = master;
+        printf("%ld turbulence master files found\n", NBMASTERS);
+        fflush(stdout);
+    }
 
 
 
@@ -812,36 +812,36 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
     /// temporary arrays for phase unwrapping
     if(WFprecision == 0)   // single precision
     {
-        IDpeakpha_re = create_2Dimage_ID("peakphare", naxesout[0], naxesout[1]);
-        IDpeakpha_im = create_2Dimage_ID("peakphaim", naxesout[0], naxesout[1]);
+        create_2Dimage_ID("peakphare", naxesout[0], naxesout[1], &IDpeakpha_re);
+        create_2Dimage_ID("peakphaim", naxesout[0], naxesout[1], &IDpeakpha_im);
         //IDpeakpha = create_2Dimage_ID("peakpha", naxesout[0], naxesout[1]);
 
         xsizepeakpha = (uint32_t)(naxesout[0] / 20);
         ysizepeakpha = (uint32_t)(naxesout[1] / 20);
-        IDpeakpha_re_bin = create_2Dimage_ID("peakphare_bin", xsizepeakpha,
-                                             ysizepeakpha);
-        IDpeakpha_im_bin = create_2Dimage_ID("peakphaim_bin", xsizepeakpha,
-                                             ysizepeakpha);
-        IDpeakpha_bin = create_2Dimage_ID("peakpha_bin", xsizepeakpha, ysizepeakpha);
-        IDpeakpha_bin_ch = create_2Dimage_ID("peakpha_bin_ch", xsizepeakpha,
-                                             ysizepeakpha);
+        create_2Dimage_ID("peakphare_bin", xsizepeakpha,
+                          ysizepeakpha, &IDpeakpha_re_bin);
+        create_2Dimage_ID("peakphaim_bin", xsizepeakpha,
+                          ysizepeakpha, &IDpeakpha_im_bin);
+        create_2Dimage_ID("peakpha_bin", xsizepeakpha, ysizepeakpha, &IDpeakpha_bin);
+        create_2Dimage_ID("peakpha_bin_ch", xsizepeakpha,
+                          ysizepeakpha, &IDpeakpha_bin_ch);
     }
     else
     {
-        IDpeakpha_re = create_2Dimage_ID_double("peakphare", naxesout[0], naxesout[1]);
-        IDpeakpha_im = create_2Dimage_ID_double("peakphaim", naxesout[0], naxesout[1]);
+        create_2Dimage_ID_double("peakphare", naxesout[0], naxesout[1], &IDpeakpha_re);
+        create_2Dimage_ID_double("peakphaim", naxesout[0], naxesout[1], &IDpeakpha_im);
         //IDpeakpha = create_2Dimage_ID_double("peakpha", naxesout[0], naxesout[1]);
 
         xsizepeakpha = (uint32_t)(naxesout[0] / 20);
         ysizepeakpha = (uint32_t)(naxesout[1] / 20);
-        IDpeakpha_re_bin = create_2Dimage_ID_double("peakphare_bin", xsizepeakpha,
-                           ysizepeakpha);
-        IDpeakpha_im_bin = create_2Dimage_ID_double("peakphaim_bin", xsizepeakpha,
-                           ysizepeakpha);
-        IDpeakpha_bin = create_2Dimage_ID_double("peakpha_bin", xsizepeakpha,
-                        ysizepeakpha);
-        IDpeakpha_bin_ch = create_2Dimage_ID_double("peakpha_bin_ch", xsizepeakpha,
-                           ysizepeakpha);
+        create_2Dimage_ID_double("peakphare_bin", xsizepeakpha,
+                                 ysizepeakpha, &IDpeakpha_re_bin);
+        create_2Dimage_ID_double("peakphaim_bin", xsizepeakpha,
+                                 ysizepeakpha, &IDpeakpha_im_bin);
+        create_2Dimage_ID_double("peakpha_bin", xsizepeakpha,
+                                 ysizepeakpha, &IDpeakpha_bin);
+        create_2Dimage_ID_double("peakpha_bin_ch", xsizepeakpha,
+                                 ysizepeakpha, &IDpeakpha_bin_ch);
     }
 
 
@@ -872,7 +872,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
 
             /* look for minimum altitude difference */
             minaltd = LAYER_ALT[NBLAYERS - 1];
-            
+
             for(long layer = 0; layer < NBSLAYERS - 1; layer++)
             {
                 double altdvalue = SLAYER_ALT[layer + 1] - SLAYER_ALT[layer];
@@ -893,7 +893,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
                 /* group SLAYERs i and i+1 */
                 printf("Group slayers %ld and %ld\n", layerindex, layerindex + 1);
                 SLAYER_ALT[layerindex] = (SLAYER_CN2[layerindex] * SLAYER_ALT[layerindex] + SLAYER_CN2[layerindex +
-                                     1] * SLAYER_ALT[layerindex + 1]) / (SLAYER_CN2[layerindex] + SLAYER_CN2[layerindex + 1]);
+                                          1] * SLAYER_ALT[layerindex + 1]) / (SLAYER_CN2[layerindex] + SLAYER_CN2[layerindex + 1]);
                 SLAYER_CN2[layerindex] = SLAYER_CN2[layerindex] + SLAYER_CN2[layerindex + 1];
                 for(long layer = layerindex + 1; layer < NBSLAYERS - 1; layer++)
                 {
@@ -1004,7 +1004,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
 
                 Rindex = 1.0 + AtmosphereModel_stdAtmModel_N(atm, h, atmturbconf.lambda, 0);
                 tmpf = sin(atmturbconf.zenithangle) / sqrt(Rindex * Rindex - sin(atmturbconf.zenithangle) * sin(
-                                                   atmturbconf.zenithangle));
+                            atmturbconf.zenithangle));
                 tmpf -= sin(atmturbconf.zenithangle) / sqrt(1.0 - sin(atmturbconf.zenithangle) * sin(atmturbconf.zenithangle));
                 Roffset += tmpf;
                 //           printf("h = %12f   Rindex = %12f   Roffset = %12f\n", h, Rindex, Roffset);
@@ -1018,7 +1018,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
 
                 Rindex = 1.0 + AtmosphereModel_stdAtmModel_N(atm, h, SLAMBDA, 0);
                 tmpf = sin(atmturbconf.zenithangle) / sqrt(Rindex * Rindex - sin(atmturbconf.zenithangle) * sin(
-                                                   atmturbconf.zenithangle));
+                            atmturbconf.zenithangle));
                 tmpf -= sin(atmturbconf.zenithangle) / sqrt(1.0 - sin(atmturbconf.zenithangle) * sin(atmturbconf.zenithangle));
                 RoffsetS += tmpf;
             }
@@ -1083,7 +1083,9 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
         char imnamemasterwf[STRINGMAXLEN_IMGNAME];
         WRITE_IMAGENAME(imnamemasterwf, "TM%ld", i);
 
-        if(load_fits(fnamemasterwf, imnamemasterwf, 1) == -1)
+        imageID IDt;
+        load_fits(fnamemasterwf, imnamemasterwf, LOADFITS_ERRMODE_WARNING, &IDt);
+        if(IDt == -1)
         {
             printf("CREATING %s   (%f - %f)\n", fnamemasterwf,
                    LAYER_OUTERSCALE[i] / atmturbconf.PupilScale, LAYER_INNERSCALE[i] / atmturbconf.PupilScale);
@@ -1100,12 +1102,12 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
             {
                 save_db_fits(imnamemasterwf, fnamemasterwf);
             }
-            delete_image_ID("tursctmp");
+            delete_image_ID("tursctmp", DELETE_IMAGE_ERRMODE_WARNING);
         }
         ID_TM[i] = image_ID(imnamemasterwf);
     }
     ID_TML = (long *) malloc(sizeof(long) * NBLAYERS);
-    
+
     long layer1 = 0;
     for(long layer = 0; layer < NBLAYERS; layer++)
     {
@@ -1177,7 +1179,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
 
         // renormalize turbulence screens such that a single screen has the right r0
         double normcoeff = pow(r0 / (atmturbconf.lambda / (atmturbconf.seeing / 3600.0 / 180.0 * PI) /
-                         atmturbconf.PupilScale * pfactor), 5.0 / 6.0);
+                                     atmturbconf.PupilScale * pfactor), 5.0 / 6.0);
         if(WFprecision == 0)
         {
             for(long k = 0; k < NBMASTERS; k++)
@@ -1186,7 +1188,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
                 {
                     data.image[ID_TM[k]].array.F[ii] *= normcoeff;
                 }
-			}
+            }
         }
         else
         {
@@ -1196,7 +1198,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
                 {
                     data.image[ID_TM[k]].array.D[ii] *= normcoeff;
                 }
-			}
+            }
         }
 
         r0tot = 0.0;
@@ -1205,7 +1207,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
         {
             long cnt = 0;
             double tot = 0.0;
-            
+
             if(WFprecision == 0)
             {
                 for(uint32_t ii = 0; ii < atmturbconf.MasterSize - dpix; ii++)
@@ -1284,18 +1286,18 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
 
     if(WFprecision == 0)
     {
-        ID_array1 = create_2Dimage_ID("array1", naxes[0], naxes[1]);
+        create_2Dimage_ID("array1", naxes[0], naxes[1], &ID_array1);
         if(atmturbconf.flag_SWF_make == 1)
         {
-            ID_sarray1 = create_2Dimage_ID("sarray1", naxes[0], naxes[1]);
+            create_2Dimage_ID("sarray1", naxes[0], naxes[1], &ID_sarray1);
         }
     }
     else
     {
-        ID_array1 = create_2Dimage_ID_double("array1", naxes[0], naxes[1]);
+        create_2Dimage_ID_double("array1", naxes[0], naxes[1], &ID_array1);
         if(atmturbconf.flag_SWF_make == 1)
         {
-            ID_sarray1 = create_2Dimage_ID_double("sarray1", naxes[0], naxes[1]);
+            create_2Dimage_ID_double("sarray1", naxes[0], naxes[1], &ID_sarray1);
         }
     }
 
@@ -1305,18 +1307,18 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
     {
         if(WFprecision == 0)
         {
-            ID_array2 = create_2DCimage_ID("array2", naxes[0], naxes[1]);
+            create_2DCimage_ID("array2", naxes[0], naxes[1], &ID_array2);
             if(atmturbconf.flag_SWF_make == 1)
             {
-                ID_sarray2 = create_2DCimage_ID("sarray2", naxes[0], naxes[1]);
+                create_2DCimage_ID("sarray2", naxes[0], naxes[1], &ID_sarray2);
             }
         }
         else
         {
-            ID_array2 = create_2DCimage_ID_double("array2", naxes[0], naxes[1]);
+            create_2DCimage_ID_double("array2", naxes[0], naxes[1], &ID_array2);
             if(atmturbconf.flag_SWF_make == 1)
             {
-                ID_sarray2 = create_2DCimage_ID_double("sarray2", naxes[0], naxes[1]);
+                create_2DCimage_ID_double("sarray2", naxes[0], naxes[1], &ID_sarray2);
             }
         }
     }
@@ -1374,13 +1376,13 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
     {
         if(WFprecision == 0)
         {
-            IDshmpha = create_image_ID("atmwfpha", 2, naxesout, _DATATYPE_FLOAT, 1, 0);
-            IDshmamp = create_image_ID("atmwfamp", 2, naxesout, _DATATYPE_FLOAT, 1, 0);
+            create_image_ID("atmwfpha", 2, naxesout, _DATATYPE_FLOAT, 1, 0, 0, &IDshmpha);
+            create_image_ID("atmwfamp", 2, naxesout, _DATATYPE_FLOAT, 1, 0, 0, &IDshmamp);
         }
         else
         {
-            IDshmpha = create_image_ID("atmwfpha", 2, naxesout, _DATATYPE_DOUBLE, 1, 0);
-            IDshmamp = create_image_ID("atmwfamp", 2, naxesout, _DATATYPE_DOUBLE, 1, 0);
+            create_image_ID("atmwfpha", 2, naxesout, _DATATYPE_DOUBLE, 1, 0, 0, &IDshmpha);
+            create_image_ID("atmwfamp", 2, naxesout, _DATATYPE_DOUBLE, 1, 0, 0, &IDshmamp);
         }
     }
 
@@ -1391,26 +1393,26 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
         WRITE_IMAGENAME(imnameoutpha, "%spha", atmturbconf.SWFSHMprefix);
         if(WFprecision == 0)
         {
-            IDshmspha = create_image_ID(imnameoutpha, 2, naxesout, _DATATYPE_FLOAT, 1, 0);
+            create_image_ID(imnameoutpha, 2, naxesout, _DATATYPE_FLOAT, 1, 0, 0, &IDshmspha);
         }
         else
         {
-            IDshmspha = create_image_ID(imnameoutpha, 2, naxesout, _DATATYPE_DOUBLE, 1, 0);
+            create_image_ID(imnameoutpha, 2, naxesout, _DATATYPE_DOUBLE, 1, 0, 0, &IDshmspha);
         }
 
         char imnameoutamp[STRINGMAXLEN_IMGNAME];
         WRITE_IMAGENAME(imnameoutamp, "%samp", atmturbconf.SWFSHMprefix);
         if(WFprecision == 0)
         {
-            IDshmsamp = create_image_ID(imnameoutamp, 2, naxesout, _DATATYPE_FLOAT, 1, 0);
+            create_image_ID(imnameoutamp, 2, naxesout, _DATATYPE_FLOAT, 1, 0, 0, &IDshmsamp);
         }
         else
         {
-            IDshmsamp = create_image_ID(imnameoutamp, 2, naxesout, _DATATYPE_DOUBLE, 1, 0);
+            create_image_ID(imnameoutamp, 2, naxesout, _DATATYPE_DOUBLE, 1, 0, 0, &IDshmsamp);
         }
 
         int kw = 0;
-        
+
         strcpy(data.image[IDshmspha].kw[kw].name, "TIME");
         data.image[IDshmspha].kw[kw].type = 'D';
         data.image[IDshmspha].kw[kw].value.numf = 0.0;
@@ -1485,7 +1487,8 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
             char imnamewspeed[STRINGMAXLEN_IMGNAME];
             WRITE_IMAGENAME(imnamewspeed, "wspeed_%03ld", layer);
 
-            imageID ID = load_fits(fnamewspeed, imnamewspeed, 1);
+            imageID ID;
+            load_fits(fnamewspeed, imnamewspeed, LOADFITS_ERRMODE_WARNING, &ID);
             if(ID == -1)
             {
                 printf("COMPUTE WIND SPEED SCATTER - LAYER %ld   sigma = %f m/s\n", layer,
@@ -1544,7 +1547,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
     for(long cubeindex = start_cubeindex; cubeindex < atmturbconf.NBTimeCube; cubeindex++)
     {
         for(long frame = 0; frame < NBFRAMES; frame++)
-        {            
+        {
             if(atmturbconf.flag_SWF_make == 1)
             {
                 if(WFprecision == 0)
@@ -1664,7 +1667,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
                             Fresnel_propagate_wavefront("array2", "array2p", atmturbconf.PupilScale / pfactor,
                                                         (SLAYER_ALT[super_layer_index[layer + 1]] -
                                                          SLAYER_ALT[super_layer_index[layer]]) / cos(atmturbconf.zenithangle), atmturbconf.lambda);
-                            delete_image_ID("array2");
+                            delete_image_ID("array2", DELETE_IMAGE_ERRMODE_WARNING);
                             chname_image_ID("array2p", "array2");
                         }
 
@@ -1679,7 +1682,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
                                 Fresnel_propagate_wavefront("sarray2", "sarray2p", atmturbconf.PupilScale / pfactor,
                                                             (SLAYER_ALT[super_layer_index[layer + 1]] -
                                                              SLAYER_ALT[super_layer_index[layer]]) / cos(atmturbconf.zenithangle), SLAMBDA);
-                                delete_image_ID("sarray2");
+                                delete_image_ID("sarray2", DELETE_IMAGE_ERRMODE_WARNING);
                                 chname_image_ID("sarray2p", "sarray2");
                             }
                             ID_sarray2 = image_ID("sarray2");
@@ -3618,19 +3621,19 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
             // WRITE CURRENT WF TO SHARED MEMORY
             if((atmturbconf.flag_SHMoutput == 1) && (atmturbconf.flag_SWF_make == 1))
             {
-				double coeff = 1.0;
-				
+                double coeff = 1.0;
+
                 switch(atmturbconf.flag_SWF_SHMouputM)
                 {
-                    case 1 :
-                        coeff = SLAMBDA / 2.0 / M_PI;
-                        break;
-                    case 2 :
-                        coeff = SLAMBDA / 2.0 / M_PI * 1e6;
-                        break;
-                    default :
-                        coeff = 1.0;
-                        break;
+                case 1 :
+                    coeff = SLAMBDA / 2.0 / M_PI;
+                    break;
+                case 2 :
+                    coeff = SLAMBDA / 2.0 / M_PI * 1e6;
+                    break;
+                default :
+                    coeff = 1.0;
+                    break;
                 }
 
 
@@ -3788,7 +3791,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
 
     }
 
-    delete_image_ID("array1");
+    delete_image_ID("array1", DELETE_IMAGE_ERRMODE_WARNING);
     if(WFprecision == 0)
     {
         free(array);
@@ -3800,7 +3803,7 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(
 
     if(atmturbconf.flag_SWF_make == 1)
     {
-        delete_image_ID("sarray1");
+        delete_image_ID("sarray1", DELETE_IMAGE_ERRMODE_WARNING);
         if(WFprecision == 0)
         {
             free(sarray);
