@@ -3,8 +3,11 @@
 MSdescr="Create atmospheric configuration file"
 
 source milk-script-std-config
-MSarg+=( "fname;string;output configuration file name" )
+
+MSarg+=( "fname:string:output configuration file name" )
+
 source milk-argparse
+
 conffilename="${inputMSargARRAY[0]}"
 
 

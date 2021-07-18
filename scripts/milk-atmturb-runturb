@@ -14,15 +14,15 @@ RequiredDirs=()
 
 
 # SCRIPT ARGUMENTS 
-# syntax: "name;type(s)/test(s);description"
+# syntax: "name:type(s)/test(s):description"
 
-MSarg+=( "slambdaum;float;wavelength" )
+MSarg+=( "slambdaum:float:wavelength" )
 
 
 # SCRIPT OPTIONS
-# syntax: "short;long;functioncall;args[types];description"
+# syntax: "short:long:functioncall:args[types]:description"
 
-MSopt+=( "c;confcreate;confcreate;;create configuration file and exit" )
+MSopt+=( "c:confcreate:confcreate::create configuration file and exit" )
 
 
 function confcreate() {
