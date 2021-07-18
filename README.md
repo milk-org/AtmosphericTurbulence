@@ -40,5 +40,7 @@ Edit file as needed, then run computation for desired wavelength value (unit mic
 milk-atmturb-runturb 1.65
 ~~~
 
-The process will run until killed (CTRL-C) and write wavefronts to disk.
+The process will run until killed (CTRL-C) and write wavefronts to filesystem in subdir `WFout`. Script will resume computation where it previously stopped when re-started.
 
+
+Note: Both scripts take -h argument for help.
