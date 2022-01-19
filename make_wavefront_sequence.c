@@ -18,8 +18,9 @@
 #include "WFpropagate/Fresnel_propagate.h"
 #include "WFpropagate/WFpropagate.h"
 
-#include "AtmosphereModel/AirMixture_ria.h"
 #include "AtmosphereModel/AtmosphereModel.h"
+
+#include "AtmosphereModel/AirMixture_ria.h"
 #include "AtmosphereModel/AtmosphereModel_Create_from_CONF.h"
 #include "AtmosphereModel/AtmosphereModel_stdAtmModel_ria.h"
 
