@@ -3,7 +3,7 @@
 MSdescr="Create atmospheric turbulence sequence"
 
 # standard configuration
-# 
+#
 source milk-script-std-config
 
 # prerequisites
@@ -13,7 +13,7 @@ RequiredFiles=()
 RequiredDirs=()
 
 
-# SCRIPT ARGUMENTS 
+# SCRIPT ARGUMENTS
 # syntax: "name:type(s)/test(s):description"
 
 MSarg+=( "slambdaum:float:wavelength" )
@@ -204,7 +204,7 @@ while getopts :hT:dN:ae: FLAG; do
     echo "ADOPTING TURBULENCE PROFILE CASE = $turbprofcase"
     ;;
     d) # double precision
-	PRECISION="1" 
+	PRECISION="1"
     ;;
     N) # number of layers
 	NBlayers=$OPTARG
@@ -222,7 +222,7 @@ while getopts :hT:dN:ae: FLAG; do
   esac
 done
 
-shift $((OPTIND-1))  
+shift $((OPTIND-1))
 
 
 
@@ -301,4 +301,3 @@ $execname << EOF
 mkwfs ${slambdaum} ${PRECISION} ${COMPmode}
 exit
 EOF
-

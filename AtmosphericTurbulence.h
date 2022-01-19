@@ -6,8 +6,6 @@
  * Do not use this .h file for forward declaration internal to the module.\n
  */
 
-
-
 #ifndef _ATMOSPHERICTURBULENCE_H
 #define _MATMOSPHERICTURBULENCE_H
 

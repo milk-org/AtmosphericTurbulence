@@ -7,12 +7,11 @@
 
 #include <math.h>
 
-
 #include "CommandLineInterface/CLIcore.h"
 
 // required for create_2Dimage_ID
-#include "COREMOD_memory/COREMOD_memory.h"
 #include "COREMOD_arith/COREMOD_arith.h"
+#include "COREMOD_memory/COREMOD_memory.h"
 #include "fft/fft.h"
 #include "image_gen/image_gen.h"
 
@@ -20,20 +19,12 @@
 // Forward declaration(s)
 // ==========================================
 
-errno_t AtmosphericTurbulence_make_master_turbulence_screen_pow(
-    const char *ID_name1,
-    const char *ID_name2,
-    uint32_t size,
-    float power
-);
-
-
+errno_t AtmosphericTurbulence_make_master_turbulence_screen_pow(const char *ID_name1, const char *ID_name2,
+                                                                uint32_t size, float power);
 
 // ==========================================
 // Command line interface wrapper function(s)
 // ==========================================
-
-
 
 /** @brief Example CLI function
  *
@@ -63,19 +54,14 @@ errno_t AtmosphericTurbulence_make_master_turbulence_screen_pow(
  */
 static errno_t AtmosphericTurbulence_make_master_turbulence_screen_pow__cli()
 {
-    if(0
-            + CLI_checkarg(1, CLIARG_STR_NOT_IMG)
-            + CLI_checkarg(2, CLIARG_STR_NOT_IMG)
-            + CLI_checkarg(3, CLIARG_LONG)
-            + CLI_checkarg(4, CLIARG_FLOAT)
-            == 0)
+    if (0 + CLI_checkarg(1, CLIARG_STR_NOT_IMG) + CLI_checkarg(2, CLIARG_STR_NOT_IMG) + CLI_checkarg(3, CLIARG_LONG) +
+            CLI_checkarg(4, CLIARG_FLOAT) ==
+        0)
     {
         // If arguments meet requirements, command is executed
         //
         AtmosphericTurbulence_make_master_turbulence_screen_pow(
-            data.cmdargtoken[1].val.string,
-            data.cmdargtoken[2].val.string,
-            data.cmdargtoken[3].val.numl,
+            data.cmdargtoken[1].val.string, data.cmdargtoken[2].val.string, data.cmdargtoken[3].val.numl,
             data.cmdargtoken[4].val.numf);
 
         return CLICMD_SUCCESS;
@@ -87,12 +73,6 @@ static errno_t AtmosphericTurbulence_make_master_turbulence_screen_pow__cli()
     }
 }
 
-
-
-
-
-
-
 // ==========================================
 // Register CLI command(s)
 // ==========================================
@@ -100,33 +80,19 @@ static errno_t AtmosphericTurbulence_make_master_turbulence_screen_pow__cli()
 errno_t AtmosphericTurbulence_make_master_turbulence_screen_pow_addCLIcmd()
 {
 
-    RegisterCLIcommand(
-        "mkturbscreenpow",
-        __FILE__,
-        AtmosphericTurbulence_make_master_turbulence_screen_pow__cli,
-        "creates master turbulence screens with power law index",
-        "<screen1> <screen2> <size> <powindex>",
-        "mkturbscreenpow scr1 scr2 512 1.7",
-        "AtmosphericTurbulence_make_master_turbulence_screen_pow(const char *ID_name1, const char *ID_name2, uint32_t size, float power)");
+    RegisterCLIcommand("mkturbscreenpow", __FILE__, AtmosphericTurbulence_make_master_turbulence_screen_pow__cli,
+                       "creates master turbulence screens with power law index",
+                       "<screen1> <screen2> <size> <powindex>", "mkturbscreenpow scr1 scr2 512 1.7",
+                       "AtmosphericTurbulence_make_master_turbulence_screen_pow(const char *ID_name1, const char "
+                       "*ID_name2, uint32_t size, float power)");
 
     return RETURN_SUCCESS;
 }
 
-
-
-
-
-
-
-
 // By convention, function name starts with <modulename>__
 //
-errno_t AtmosphericTurbulence_make_master_turbulence_screen_pow(
-    const char *ID_name1,
-    const char *ID_name2,
-    uint32_t size,
-    float power
-)
+errno_t AtmosphericTurbulence_make_master_turbulence_screen_pow(const char *ID_name1, const char *ID_name2,
+                                                                uint32_t size, float power)
 {
     imageID ID;
     uint32_t ii;
@@ -161,11 +127,10 @@ errno_t AtmosphericTurbulence_make_master_turbulence_screen_pow(
     ID = image_ID("strf");
     value = 0.0;
     cnt = 0;
-    for(ii = 1; ii < Dlim; ii++)
-        for(jj = 1; jj < Dlim; jj++)
+    for (ii = 1; ii < Dlim; ii++)
+        for (jj = 1; jj < Dlim; jj++)
         {
-            value += log10(data.image[ID].array.F[jj * size + ii]) - power * log10(sqrt(
-                         ii * ii + jj * jj));
+            value += log10(data.image[ID].array.F[jj * size + ii]) - power * log10(sqrt(ii * ii + jj * jj));
             /*	printf("%ld %ld %f\n",ii,jj,log10(data.image[ID].array.F[jj*size+ii])-5.0/3.0*log10(sqrt(ii*ii+jj*jj)));*/
             cnt++;
         }
@@ -176,11 +141,10 @@ errno_t AtmosphericTurbulence_make_master_turbulence_screen_pow(
     ID = image_ID("strf");
     value = 0.0;
     cnt = 0;
-    for(ii = 1; ii < Dlim; ii++)
-        for(jj = 1; jj < Dlim; jj++)
+    for (ii = 1; ii < Dlim; ii++)
+        for (jj = 1; jj < Dlim; jj++)
         {
-            value += log10(data.image[ID].array.F[jj * size + ii]) - power * log10(sqrt(
-                         ii * ii + jj * jj));
+            value += log10(data.image[ID].array.F[jj * size + ii]) - power * log10(sqrt(ii * ii + jj * jj));
             cnt++;
         }
     delete_image_ID("strf", DELETE_IMAGE_ERRMODE_WARNING);
@@ -191,11 +155,5 @@ errno_t AtmosphericTurbulence_make_master_turbulence_screen_pow(
     delete_image_ID("tmpo1", DELETE_IMAGE_ERRMODE_WARNING);
     delete_image_ID("tmpo2", DELETE_IMAGE_ERRMODE_WARNING);
 
-
     return RETURN_SUCCESS;
 }
-
-
-
-
-

@@ -91,10 +91,10 @@ SITE_PRESS="0.6"                         # [atm] = [101325 Pa]
 # There are 3 ways to specify the water vapor content vertical distribution
 
 # Method 1: specify total precipitable water and precipitable water scale height
-# the relative humitidy vertical distribution will be computed and given in file atm.txt 
+# the relative humitidy vertical distribution will be computed and given in file atm.txt
 
 # Method 2: specify relative humidity at site altitude and precipitable water scale height
-# the total precipitable water will be computed 
+# the total precipitable water will be computed
 
 # Method 3: specify relatice humidity and total precipitable water
 # the precipitable water scale height will be adjusted automaticallyq
@@ -104,7 +104,7 @@ SITE_RH="30.0"                          # site relative humidity [%]
 SITE_TPW="1.00"                          # Site total precitipable water [mm] (only takes into account PW above SITE_ALT)
 SITE_PW_SCALEH="2000.0"                 # water vapor relative concentration scale height [m]
 
-# IMPORTANT NOTE: 
+# IMPORTANT NOTE:
 # software will issue an error if the input parameters yield RH>100% at any altitude above site
 
 
@@ -121,7 +121,7 @@ SHM_OUTPUT=0                              # shared memory output (phase only)
 
 # ------------- HIGH FIDELITY OUTPUT WAVELENGTH ---------------------------------
 # enter here parameters for the high fidelity diffractive propagation
-# 
+#
 
 MAKE_SWAVEFRONT=1                   # 1 if the high fidelity wavefront series needs to be made
 SLAMBDA="1.600"                     # wavelength for high fidelity simulation [micron] - DEFAULT VALUE
@@ -134,7 +134,7 @@ SWF_FILE_PREFIX="./${WFoutdir}/wf_"   # file prefix for science wavefronts
 SHM_SOUTPUT=0                       # shared memory output (phase and amp)
 SHM_SPREFIX="outwf"                 # high fidelity wavefront shared memory file prefix
 SHM_SOUTPUTM=2                      # output shared memory phase unit. 0:rad, 1:meter, 2:um
-     
+
 
 
 # ------------ OUTPUT PARAMETERS --------------------------------------------
@@ -142,7 +142,7 @@ SHM_SOUTPUTM=2                      # output shared memory phase unit. 0:rad, 1:
 
 # pixel size, scale -----------------------------------------------
 WFsize=512                          # pixel size of output images
-PUPIL_SCALE="0.02"                  # pupil scale - m per pixel 
+PUPIL_SCALE="0.02"                  # pupil scale - m per pixel
 
 
 
@@ -162,11 +162,11 @@ REALTIMEFACTOR="1.0"                # time dilatation factor for realtime mode (
 # if realtime flat = 1, use computer clock as physical time in the simulation, multiplied by REALTIMEFACTOR
 # for example, REALTIME=1 and REALTIMEFACTOR=1.0 computes turbulence at real time speed
 # if REALTIMEFACTOR=0.1, turbulence will be computed at 0.1x real speed
-# note that if REALTIME=1, multiple instances of the program are syncronized 
+# note that if REALTIME=1, multiple instances of the program are syncronized
 # The realtime mode is typically used when output is shared memory for another real-time program
 
 WFTIME_STEP="0.001"                 # time step in seconds between wavefront frames
-TIME_CUBESPAN="0.1"                 # time span for one continuous WF cube file 
+TIME_CUBESPAN="0.1"                 # time span for one continuous WF cube file
 TIME_NBCUBE="100000000"                # total number of consecutive wavefront cubes to compute
 SIMTDELAY=0                         # additional time delay [us] between frames (used to limit CPU load)
 # NOTE:
@@ -185,7 +185,7 @@ SKIP_EXISTING=1                     # set to 1 if the code should skip existing 
 WF_RAW_SIZE=1024                    # size of the raw wavefronts used internally in the code (can be bigger than the output pixel size)
 MASTER_SIZE=4096                    # size in pixel of master turbulence screens - names should be t<n>_<MASTER_SIZE>
 
-# make sure MASTER_SIZE is significantly larger than the pupil to avoid wavefront repetition and low frequency attenuation 
+# make sure MASTER_SIZE is significantly larger than the pupil to avoid wavefront repetition and low frequency attenuation
 
 
 
@@ -210,9 +210,9 @@ FRESNEL_PROPAGATION_BIN="1000.0"    # vertical distance within which layers will
 # ====================================================================================================
 
 
-# default atmospheric turbulence profile 
+# default atmospheric turbulence profile
 
-TURBULENCE_SEEING=0.6 
+TURBULENCE_SEEING=0.6
 echo "# altitude(m)   relativeCN2     speed(m/s)      direction(rad)   outerscale[m]	innerscale[m]	sigmawsp[m/s]	windOuterScale[m]" > turbul.prof
 echo "" >> turbul.prof
 echo " 4215     5.32        6.5     1.47     2.0        0.01    1.0     10.0" >> turbul.prof
@@ -228,7 +228,7 @@ echo "23701     0.697       5.6     3.3     40.0        1.0     2.0     80.0" >>
 turbprofcase="NULL"
 
 if [ "${turbprofcase}" = "HVbad" ]; then
-# HV model, bad seeing 1.3", 20 m/s 
+# HV model, bad seeing 1.3", 20 m/s
 ./mkHVturbprof 20.0 0.087 $SITE_ALT $NBlayers
 TURBULENCE_SEEING=$( cat conf_turb.txt )
 mv turbHV.prof turbul.prof
