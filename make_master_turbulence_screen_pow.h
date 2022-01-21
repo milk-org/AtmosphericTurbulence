@@ -8,7 +8,7 @@
 
 errno_t AtmosphericTurbulence_make_master_turbulence_screen_pow_addCLIcmd();
 
-errno_t AtmosphericTurbulence_make_master_turbulence_screen_pow(const char *ID_name1, const char *ID_name2,
-                                                                uint32_t size, float power);
+errno_t AtmosphericTurbulence_make_master_turbulence_screen_pow(
+    const char *ID_name1, const char *ID_name2, uint32_t size, float power);
 
 #endif

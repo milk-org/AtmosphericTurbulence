@@ -10,6 +10,8 @@
 
 errno_t AtmosphericTurbulence_make_wavefront_sequence_addCLIcmd();
 
-errno_t AtmosphericTurbulence_make_wavefront_sequence(float slambdaum, long WFprecision, int compmode);
+errno_t AtmosphericTurbulence_make_wavefront_sequence(float slambdaum,
+                                                      long  WFprecision,
+                                                      int   compmode);
 
 #endif

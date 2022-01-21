@@ -20,12 +20,17 @@
 // sigmawind [m/s]
 // Lwind [m]
 //
-imageID make_AtmosphericTurbulence_vonKarmanWind(uint32_t vKsize, float pixscale, float sigmawind, float Lwind,
-                                                 long size, const char *restrict IDout_name)
+imageID
+make_AtmosphericTurbulence_vonKarmanWind(uint32_t vKsize,
+                                         float    pixscale,
+                                         float    sigmawind,
+                                         float    Lwind,
+                                         long     size,
+                                         const char *restrict IDout_name)
 {
     imageID ID, IDc;
-    double dx, r;
-    double rms = 0.0;
+    double  dx, r;
+    double  rms = 0.0;
 
     double sigmau;
     double sigmav;
@@ -49,10 +54,13 @@ imageID make_AtmosphericTurbulence_vonKarmanWind(uint32_t vKsize, float pixscale
     for (long ii = 0; ii < vKsize; ii++)
     {
         dx = 1.0 * ii - vKsize / 2;
-        r = sqrt(dx * dx); // period = (size*pixscale)/r
+        r  = sqrt(dx * dx); // period = (size*pixscale)/r
         // spatial frequency = 2 PI / period
-        data.image[ID].array.F[ii] =
-            sqrt(1.0 / pow(1.0 + pow(1.339 * 2.0 * M_PI * r / (vKsize * pixscale) * Lwind, 2.0), 5.0 / 6.0));
+        data.image[ID].array.F[ii] = sqrt(
+            1.0 /
+            pow(1.0 + pow(1.339 * 2.0 * M_PI * r / (vKsize * pixscale) * Lwind,
+                          2.0),
+                5.0 / 6.0));
     }
 
     make_rnd("tmpg", vKsize, 1, "-gauss");
@@ -70,7 +78,7 @@ imageID make_AtmosphericTurbulence_vonKarmanWind(uint32_t vKsize, float pixscale
     mk_reim_from_complex("tmpcf", "tmpo1", "tmpo2", 0);
     delete_image_ID("tmpcf", DELETE_IMAGE_ERRMODE_WARNING);
     delete_image_ID("tmpo2", DELETE_IMAGE_ERRMODE_WARNING);
-    ID = image_ID("tmpo1");
+    ID  = image_ID("tmpo1");
     rms = 0.0;
     for (uint32_t ii = 0; ii < vKsize; ii++)
     {
@@ -92,11 +100,15 @@ imageID make_AtmosphericTurbulence_vonKarmanWind(uint32_t vKsize, float pixscale
     create_2Dimage_ID("tmpamp0", vKsize, 1, &ID);
     for (uint32_t ii = 0; ii < vKsize; ii++)
     {
-        dx = 1.0 * ii - vKsize / 2;
-        r = sqrt(dx * dx);
-        data.image[ID].array.F[ii] =
-            sqrt((1.0 + 8.0 / 3.0 * pow(2.678 * 2.0 * M_PI * r / (vKsize * pixscale) * Lwind, 2.0)) /
-                 pow(1.0 + pow(2.678 * 2.0 * M_PI * r / (vKsize * pixscale) * Lwind, 2.0), 11.0 / 6.0));
+        dx                         = 1.0 * ii - vKsize / 2;
+        r                          = sqrt(dx * dx);
+        data.image[ID].array.F[ii] = sqrt(
+            (1.0 + 8.0 / 3.0 *
+                       pow(2.678 * 2.0 * M_PI * r / (vKsize * pixscale) * Lwind,
+                           2.0)) /
+            pow(1.0 + pow(2.678 * 2.0 * M_PI * r / (vKsize * pixscale) * Lwind,
+                          2.0),
+                11.0 / 6.0));
     }
     make_rnd("tmpg", vKsize, 1, "-gauss");
     arith_image_mult("tmpg", "tmpamp0", "tmpamp");
@@ -112,7 +124,7 @@ imageID make_AtmosphericTurbulence_vonKarmanWind(uint32_t vKsize, float pixscale
     mk_reim_from_complex("tmpcf", "tmpo1", "tmpo2", 0);
     delete_image_ID("tmpcf", DELETE_IMAGE_ERRMODE_WARNING);
     delete_image_ID("tmpo2", DELETE_IMAGE_ERRMODE_WARNING);
-    ID = image_ID("tmpo1");
+    ID  = image_ID("tmpo1");
     rms = 0.0;
     for (uint32_t ii = 0; ii < vKsize; ii++)
     {
@@ -122,7 +134,8 @@ imageID make_AtmosphericTurbulence_vonKarmanWind(uint32_t vKsize, float pixscale
 
     for (uint32_t ii = 0; ii < vKsize; ii++)
     {
-        data.image[IDc].array.F[vKsize + ii] = data.image[ID].array.F[ii] / rms * sigmav;
+        data.image[IDc].array.F[vKsize + ii] =
+            data.image[ID].array.F[ii] / rms * sigmav;
     }
     delete_image_ID("tmpo1", DELETE_IMAGE_ERRMODE_WARNING);
 
@@ -134,11 +147,15 @@ imageID make_AtmosphericTurbulence_vonKarmanWind(uint32_t vKsize, float pixscale
     create_2Dimage_ID("tmpamp0", vKsize, 1, &ID);
     for (uint32_t ii = 0; ii < vKsize; ii++)
     {
-        dx = 1.0 * ii - size / 2;
-        r = sqrt(dx * dx);
-        data.image[ID].array.F[ii] =
-            sqrt((1.0 + 8.0 / 3.0 * pow(2.678 * 2.0 * M_PI * r / (vKsize * pixscale) * Lwind, 2.0)) /
-                 pow(1.0 + pow(2.678 * 2.0 * M_PI * r / (vKsize * pixscale) * Lwind, 2.0), 11.0 / 6.0));
+        dx                         = 1.0 * ii - size / 2;
+        r                          = sqrt(dx * dx);
+        data.image[ID].array.F[ii] = sqrt(
+            (1.0 + 8.0 / 3.0 *
+                       pow(2.678 * 2.0 * M_PI * r / (vKsize * pixscale) * Lwind,
+                           2.0)) /
+            pow(1.0 + pow(2.678 * 2.0 * M_PI * r / (vKsize * pixscale) * Lwind,
+                          2.0),
+                11.0 / 6.0));
     }
     make_rnd("tmpg", vKsize, 1, "-gauss");
     arith_image_mult("tmpg", "tmpamp0", "tmpamp");
@@ -154,7 +171,7 @@ imageID make_AtmosphericTurbulence_vonKarmanWind(uint32_t vKsize, float pixscale
     mk_reim_from_complex("tmpcf", "tmpo1", "tmpo2", 0);
     delete_image_ID("tmpcf", DELETE_IMAGE_ERRMODE_WARNING);
     delete_image_ID("tmpo2", DELETE_IMAGE_ERRMODE_WARNING);
-    ID = image_ID("tmpo1");
+    ID  = image_ID("tmpo1");
     rms = 0.0;
     for (uint32_t ii = 0; ii < vKsize; ii++)
     {
@@ -164,7 +181,8 @@ imageID make_AtmosphericTurbulence_vonKarmanWind(uint32_t vKsize, float pixscale
 
     for (uint32_t ii = 0; ii < size; ii++)
     {
-        data.image[IDc].array.F[vKsize * 2 + ii] = data.image[ID].array.F[ii] / rms * sigmav;
+        data.image[IDc].array.F[vKsize * 2 + ii] =
+            data.image[ID].array.F[ii] / rms * sigmav;
     }
     delete_image_ID("tmpo1", DELETE_IMAGE_ERRMODE_WARNING);
 
