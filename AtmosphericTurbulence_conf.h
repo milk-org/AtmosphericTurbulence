@@ -20,7 +20,7 @@ typedef struct
 
     // turbulence profile file name
     char turbulenceprof_fname
-        [STRINGMAXLEN_FILENAME]; // CONF_TURBULENCE_PROF_FILE
+    [STRINGMAXLEN_FILENAME]; // CONF_TURBULENCE_PROF_FILE
 
     // zenith angle [rad]
     float zenithangle; // CONF_ZANGLE

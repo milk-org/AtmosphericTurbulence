@@ -36,14 +36,14 @@ errno_t AtmosphericTurbulence_makeHV_CN2prof(
     A0    = 1.7e-14;
 
     Astep = 1.0;
-    for (iter = 0; iter < 30; iter++)
+    for(iter = 0; iter < 30; iter++)
     {
         A      = A0 * Acoeff;
         CN2sum = 0.0;
-        for (h = sitealt; h < hmax; h += hstep)
+        for(h = sitealt; h < hmax; h += hstep)
         {
             CN2 = 5.94e-53 * pow(wspeed / 27.0, 2.0) * pow(h, 10.0) *
-                      exp(-h / 1000.0) +
+                  exp(-h / 1000.0) +
                   2.7e-16 * exp(-h / 1500.0) + A * exp(-(h - sitealt) / 100.0);
             CN2sum += CN2 / hstep;
         }
@@ -52,7 +52,7 @@ errno_t AtmosphericTurbulence_makeHV_CN2prof(
 
         //  printf("Acoeff = %12f -> r0 = %10f m -> seeing = %10f arcsec\n", Acoeff, r0val, (lambda/r0val)/M_PI*180.0*3600.0);
 
-        if (r0val > r0)
+        if(r0val > r0)
         {
             Acoeff *= 1.0 + Astep;
         }
@@ -73,7 +73,7 @@ errno_t AtmosphericTurbulence_makeHV_CN2prof(
     layerarray_sigmaWindSpeed = (double *) malloc(sizeof(double) * NBlayer);
     layerarray_Lwind          = (double *) malloc(sizeof(double) * NBlayer);
 
-    for (k = 0; k < NBlayer; k++)
+    for(k = 0; k < NBlayer; k++)
     {
         layerarray_h[k] =
             sitealt + pow(1.0 * k / (NBlayer - 1), 2.0) * (hmax - sitealt);
@@ -81,14 +81,14 @@ errno_t AtmosphericTurbulence_makeHV_CN2prof(
     }
 
     hstep = 1.0;
-    for (h = sitealt; h < hmax; h += hstep)
+    for(h = sitealt; h < hmax; h += hstep)
     {
         CN2 = 5.94e-53 * pow(wspeed / 27.0, 2.0) * pow(h, 10.0) *
-                  exp(-h / 1000.0) +
+              exp(-h / 1000.0) +
               2.7e-16 * exp(-h / 1500.0) + A * exp(-(h - sitealt) / 100.0);
-        k = (long) (sqrt((h - sitealt) / (hmax - sitealt)) *
-                        (1.0 * NBlayer - 1.0) +
-                    0.5);
+        k = (long)(sqrt((h - sitealt) / (hmax - sitealt)) *
+                   (1.0 * NBlayer - 1.0) +
+                   0.5);
         layerarray_CN2frac[k] += CN2;
     }
 
@@ -98,13 +98,13 @@ errno_t AtmosphericTurbulence_makeHV_CN2prof(
             "outerscale[m] innerscale[m] sigmaWsp[m/s] "
             "Lwind[m]\n");
     fprintf(fp, "\n");
-    for (k = 0; k < NBlayer; k++)
+    for(k = 0; k < NBlayer; k++)
     {
         layerarray_CN2frac[k] /= CN2sum;
 
         l0 = 0.008 + 0.072 * pow(layerarray_h[k] / 20000.0, 1.6);
 
-        if (layerarray_h[k] < 14000.0)
+        if(layerarray_h[k] < 14000.0)
         {
             L0 = pow(10.0, 2.0 - 0.9 * (layerarray_h[k] / 14000.0));
         }

@@ -63,10 +63,10 @@ double Z_Air(double P, double T, double RH)
     printf("enhancement factor f = %f\n", f);
     xv = RH * 0.01 * f * Psv / P;
     Z  = 1.0 -
-        P / TK *
-            (a0 + a1 * T + a2 * T * T + (c0 + b1 * T) * xv +
-             (c0 + c1 * T) * xv * xv) +
-        P * P / TK / TK * (d + e * xv * xv);
+         P / TK *
+         (a0 + a1 * T + a2 * T * T + (c0 + b1 * T) * xv +
+          (c0 + c1 * T) * xv * xv) +
+         P * P / TK / TK * (d + e * xv * xv);
 
     Z0 = 1.00001 - 5.8057e-9 * P0 + 2.6402e-16 * P0 * P0;
 
@@ -78,10 +78,10 @@ double Z_Air(double P, double T, double RH)
     printf("enhancement factor f0 = %f\n", f0);
     xv0 = RH0 * 0.01 * f0 * Psv0 / P0;
     Z0  = 1.0 -
-         P0 / TK0 *
-             (a0 + a1 * T0 + a2 * T0 * T0 + (c0 + b1 * T0) * xv0 +
-              (c0 + c1 * T0) * xv0 * xv0) +
-         P0 * P0 / TK0 / TK0 * (d + e * xv0 * xv0);
+          P0 / TK0 *
+          (a0 + a1 * T0 + a2 * T0 * T0 + (c0 + b1 * T0) * xv0 +
+           (c0 + c1 * T0) * xv0 * xv0) +
+          P0 * P0 / TK0 / TK0 * (d + e * xv0 * xv0);
 
     rhocoeff1 = 101325.0 / P;
     rhocoeff1 *= (T + 273.15) /

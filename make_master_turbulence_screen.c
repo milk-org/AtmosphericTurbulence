@@ -22,11 +22,11 @@
 
 errno_t
 AtmosphericTurbulence_make_master_turbulence_screen(const char *ID_name1,
-                                                    const char *ID_name2,
-                                                    uint32_t    size,
-                                                    float       outerscale,
-                                                    float       innerscale,
-                                                    long        WFprecision);
+        const char *ID_name2,
+        uint32_t    size,
+        float       outerscale,
+        float       innerscale,
+        long        WFprecision);
 
 // ==========================================
 // Command line interface wrapper function(s)
@@ -34,11 +34,11 @@ AtmosphericTurbulence_make_master_turbulence_screen(const char *ID_name1,
 
 static errno_t AtmosphericTurbulence_make_master_turbulence_screen__cli()
 {
-    if (0 + CLI_checkarg(1, CLIARG_STR_NOT_IMG) +
+    if(0 + CLI_checkarg(1, CLIARG_STR_NOT_IMG) +
             CLI_checkarg(2, CLIARG_STR_NOT_IMG) + CLI_checkarg(3, CLIARG_LONG) +
             CLI_checkarg(4, CLIARG_FLOAT) + CLI_checkarg(5, CLIARG_FLOAT) +
             CLI_checkarg(6, CLIARG_LONG) ==
-        0)
+            0)
     {
         // If arguments meet requirements, command is executed
         //
@@ -87,11 +87,11 @@ errno_t AtmosphericTurbulence_make_master_turbulence_screen_addCLIcmd()
 //
 errno_t
 AtmosphericTurbulence_make_master_turbulence_screen(const char *ID_name1,
-                                                    const char *ID_name2,
-                                                    uint32_t    size,
-                                                    float       outerscale,
-                                                    float       innerscale,
-                                                    long        WFprecision)
+        const char *ID_name2,
+        uint32_t    size,
+        float       outerscale,
+        float       innerscale,
+        long        WFprecision)
 {
     imageID ID;
     double  value, C1, C2;
@@ -119,7 +119,7 @@ AtmosphericTurbulence_make_master_turbulence_screen(const char *ID_name1,
      */
 
     IDv = variable_ID("RLIM");
-    if (IDv != -1)
+    if(IDv != -1)
     {
         RLIMMODE = 1;
         rlim     = data.variable[IDv].value.f;
@@ -129,7 +129,7 @@ AtmosphericTurbulence_make_master_turbulence_screen(const char *ID_name1,
     OUTERscale_f0 = 1.0 * size / outerscale; // [1/pix] in F plane
     INNERscale_f0 = (5.92 / (2.0 * M_PI)) * size / innerscale;
 
-    if (WFprecision == 0)
+    if(WFprecision == 0)
     {
         make_rnd("tmppha", size, size, "");
     }
@@ -141,7 +141,7 @@ AtmosphericTurbulence_make_master_turbulence_screen(const char *ID_name1,
     arith_image_cstmult("tmppha", 2.0 * PI, "tmppha1");
     delete_image_ID("tmppha", DELETE_IMAGE_ERRMODE_WARNING);
     //  make_dist("tmpd",size,size,size/2,size/2);
-    if (WFprecision == 0)
+    if(WFprecision == 0)
     {
         create_2Dimage_ID("tmpd", size, size, &ID);
     }
@@ -150,25 +150,25 @@ AtmosphericTurbulence_make_master_turbulence_screen(const char *ID_name1,
         create_2Dimage_ID_double("tmpd", size, size, &ID);
     }
 
-    if (WFprecision == 0)
+    if(WFprecision == 0)
     {
-        for (uint32_t ii = 0; ii < size; ii++)
-            for (uint32_t jj = 0; jj < size; jj++)
+        for(uint32_t ii = 0; ii < size; ii++)
+            for(uint32_t jj = 0; jj < size; jj++)
             {
                 dx = 1.0 * ii - size / 2;
                 dy = 1.0 * jj - size / 2;
 
-                if (RLIMMODE == 1)
+                if(RLIMMODE == 1)
                 {
                     r = sqrt(dx * dx + dy * dy);
-                    if (r < rlim)
+                    if(r < rlim)
                     {
                         data.image[ID].array.F[jj * size + ii] = 0.0;
                     }
                     else
                     {
                         data.image[ID].array.F[jj * size + ii] = sqrt(
-                            dx * dx + dy * dy + OUTERscale_f0 * OUTERscale_f0);
+                                    dx * dx + dy * dy + OUTERscale_f0 * OUTERscale_f0);
                     }
                 }
                 else
@@ -180,23 +180,23 @@ AtmosphericTurbulence_make_master_turbulence_screen(const char *ID_name1,
     }
     else
     {
-        for (uint32_t ii = 0; ii < size; ii++)
-            for (uint32_t jj = 0; jj < size; jj++)
+        for(uint32_t ii = 0; ii < size; ii++)
+            for(uint32_t jj = 0; jj < size; jj++)
             {
                 dx = 1.0 * ii - size / 2;
                 dy = 1.0 * jj - size / 2;
 
-                if (RLIMMODE == 1)
+                if(RLIMMODE == 1)
                 {
                     r = sqrt(dx * dx + dy * dy);
-                    if (r < rlim)
+                    if(r < rlim)
                     {
                         data.image[ID].array.D[jj * size + ii] = 0.0;
                     }
                     else
                     {
                         data.image[ID].array.D[jj * size + ii] = sqrt(
-                            dx * dx + dy * dy + OUTERscale_f0 * OUTERscale_f0);
+                                    dx * dx + dy * dy + OUTERscale_f0 * OUTERscale_f0);
                     }
                 }
                 else
@@ -207,7 +207,7 @@ AtmosphericTurbulence_make_master_turbulence_screen(const char *ID_name1,
             }
     }
 
-    if (WFprecision == 0)
+    if(WFprecision == 0)
     {
         make_rnd("tmpg", size, size, "-gauss");
     }
@@ -217,10 +217,10 @@ AtmosphericTurbulence_make_master_turbulence_screen(const char *ID_name1,
     }
 
     ID = image_ID("tmpg");
-    if (WFprecision == 0)
+    if(WFprecision == 0)
     {
-        for (uint32_t ii = 0; ii < size; ii++)
-            for (uint32_t jj = 0; jj < size; jj++)
+        for(uint32_t ii = 0; ii < size; ii++)
+            for(uint32_t jj = 0; jj < size; jj++)
             {
                 dx = 1.0 * ii - size / 2;
                 dy = 1.0 * jj - size / 2;
@@ -232,8 +232,8 @@ AtmosphericTurbulence_make_master_turbulence_screen(const char *ID_name1,
     }
     else
     {
-        for (uint32_t ii = 0; ii < size; ii++)
-            for (uint32_t jj = 0; jj < size; jj++)
+        for(uint32_t ii = 0; ii < size; ii++)
+            for(uint32_t jj = 0; jj < size; jj++)
             {
                 dx = 1.0 * ii - size / 2;
                 dy = 1.0 * jj - size / 2;
@@ -266,10 +266,10 @@ AtmosphericTurbulence_make_master_turbulence_screen(const char *ID_name1,
 
     value = 0.0;
     cnt   = 0;
-    if (data.image[ID].md[0].datatype == _DATATYPE_FLOAT)
+    if(data.image[ID].md[0].datatype == _DATATYPE_FLOAT)
     {
-        for (uint32_t ii = 1; ii < Dlim; ii++)
-            for (uint32_t jj = 1; jj < Dlim; jj++)
+        for(uint32_t ii = 1; ii < Dlim; ii++)
+            for(uint32_t jj = 1; jj < Dlim; jj++)
             {
                 value += log10(data.image[ID].array.F[jj * size + ii]) -
                          5.0 / 3.0 * log10(sqrt(ii * ii + jj * jj));
@@ -278,8 +278,8 @@ AtmosphericTurbulence_make_master_turbulence_screen(const char *ID_name1,
     }
     else
     {
-        for (uint32_t ii = 1; ii < Dlim; ii++)
-            for (uint32_t jj = 1; jj < Dlim; jj++)
+        for(uint32_t ii = 1; ii < Dlim; ii++)
+            for(uint32_t jj = 1; jj < Dlim; jj++)
             {
                 value += log10(data.image[ID].array.D[jj * size + ii]) -
                          5.0 / 3.0 * log10(sqrt(ii * ii + jj * jj));
@@ -294,10 +294,10 @@ AtmosphericTurbulence_make_master_turbulence_screen(const char *ID_name1,
     ID    = image_ID("strf");
     value = 0.0;
     cnt   = 0;
-    if (data.image[ID].md[0].datatype == _DATATYPE_FLOAT)
+    if(data.image[ID].md[0].datatype == _DATATYPE_FLOAT)
     {
-        for (uint32_t ii = 1; ii < Dlim; ii++)
-            for (uint32_t jj = 1; jj < Dlim; jj++)
+        for(uint32_t ii = 1; ii < Dlim; ii++)
+            for(uint32_t jj = 1; jj < Dlim; jj++)
             {
                 value += log10(data.image[ID].array.F[jj * size + ii]) -
                          5.0 / 3.0 * log10(sqrt(ii * ii + jj * jj));
@@ -306,8 +306,8 @@ AtmosphericTurbulence_make_master_turbulence_screen(const char *ID_name1,
     }
     else
     {
-        for (uint32_t ii = 1; ii < Dlim; ii++)
-            for (uint32_t jj = 1; jj < Dlim; jj++)
+        for(uint32_t ii = 1; ii < Dlim; ii++)
+            for(uint32_t jj = 1; jj < Dlim; jj++)
             {
                 value += log10(data.image[ID].array.D[jj * size + ii]) -
                          5.0 / 3.0 * log10(sqrt(ii * ii + jj * jj));

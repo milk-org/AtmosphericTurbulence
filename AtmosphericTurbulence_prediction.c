@@ -57,7 +57,7 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
     int  REG = 0; // 1 if regularization
     long NBmvec1;
 
-    if (RegLambda > 1e-20)
+    if(RegLambda > 1e-20)
     {
         REG = 1;
     }
@@ -73,8 +73,8 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
 
     ID_WFmask = image_ID(WFmask_name);
     NBpix     = 0;
-    for (uint64_t ii = 0; ii < xsize * ysize; ii++)
-        if (data.image[ID_WFmask].array.F[ii] > 0.5)
+    for(uint64_t ii = 0; ii < xsize * ysize; ii++)
+        if(data.image[ID_WFmask].array.F[ii] > 0.5)
         {
             NBpix++;
         }
@@ -86,35 +86,35 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
 
     {
         double totm = 0.0;
-        for (uint32_t ii = 0; ii < xsize; ii++)
-            for (uint32_t jj = 0; jj < ysize; jj++)
-                if (data.image[ID_WFmask].array.F[jj * xsize + ii] > 0.5)
+        for(uint32_t ii = 0; ii < xsize; ii++)
+            for(uint32_t jj = 0; jj < ysize; jj++)
+                if(data.image[ID_WFmask].array.F[jj * xsize + ii] > 0.5)
                 {
                     totm += 1.0;
                 }
 
-        for (uint32_t kk = 0; kk < zsize; kk++)
+        for(uint32_t kk = 0; kk < zsize; kk++)
         {
             double tot = 0.0;
-            for (uint32_t ii = 0; ii < xsize; ii++)
+            for(uint32_t ii = 0; ii < xsize; ii++)
             {
-                for (uint32_t jj = 0; jj < ysize; jj++)
+                for(uint32_t jj = 0; jj < ysize; jj++)
                 {
                     data.image[ID_WFin]
-                        .array.F[kk * xysize + jj * xsize + ii] *=
+                    .array.F[kk * xysize + jj * xsize + ii] *=
                         data.image[ID_WFmask].array.F[jj * xsize + ii];
                     tot += data.image[ID_WFin]
-                               .array.F[kk * xysize + jj * xsize + ii];
+                           .array.F[kk * xysize + jj * xsize + ii];
                 }
-                for (uint32_t ii = 0; ii < xsize; ii++)
+                for(uint32_t ii = 0; ii < xsize; ii++)
                 {
-                    for (uint32_t jj = 0; jj < ysize; jj++)
+                    for(uint32_t jj = 0; jj < ysize; jj++)
                     {
-                        if (data.image[ID_WFmask].array.F[jj * xsize + ii] >
-                            0.5)
+                        if(data.image[ID_WFmask].array.F[jj * xsize + ii] >
+                                0.5)
                         {
                             data.image[ID_WFin]
-                                .array.F[kk * xysize + jj * xsize + ii] -=
+                            .array.F[kk * xysize + jj * xsize + ii] -=
                                 tot / totm;
                         }
                     }
@@ -122,7 +122,7 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
             }
         }
     }
-    if (Save == 1)
+    if(Save == 1)
     {
         save_fits(WFin_name, "wfinm.fits");
     }
@@ -130,9 +130,9 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
     // LOAD PIXELS COORDINATES INTO ARRAYS
 
     NBpix = 0;
-    for (uint32_t ii = 0; ii < xsize; ii++)
-        for (uint32_t jj = 0; jj < ysize; jj++)
-            if (data.image[ID_WFmask].array.F[jj * xsize + ii] > 0.5)
+    for(uint32_t ii = 0; ii < xsize; ii++)
+        for(uint32_t jj = 0; jj < ysize; jj++)
+            if(data.image[ID_WFmask].array.F[jj * xsize + ii] > 0.5)
             {
                 pixarray_x[NBpix]  = ii;
                 pixarray_y[NBpix]  = jj;
@@ -144,10 +144,10 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
     EXECUTE_SYSTEM_COMMAND("mkdir -p pixfilters");
 
     // build data matrix
-    NBmvec   = zsize - PForder - (int) (PFlag) -1;
+    NBmvec   = zsize - PForder - (int)(PFlag) - 1;
     mvecsize = NBpix * PForder;
 
-    if (REG == 0)
+    if(REG == 0)
     {
         create_2Dimage_ID("PFmatD", NBmvec, mvecsize, &IDmatA);
     }
@@ -162,7 +162,7 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
 
     // CREATE DATA MATRIX
 
-    if (REG == 0)
+    if(REG == 0)
     {
         printf("NBmvec   = %ld  -> %ld \n", NBmvec, NBmvec);
         NBmvec1 = NBmvec;
@@ -175,27 +175,27 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
 
     printf("mvecsize = %ld  (%d x %ld)\n", mvecsize, PForder, NBpix);
 
-    for (int m = 0; m < NBmvec; m++)
+    for(int m = 0; m < NBmvec; m++)
     {
         k0 = m + PForder - 1; // dt=0 index
-        for (pix = 0; pix < NBpix; pix++)
-            for (int dt = 0; dt < PForder; dt++)
+        for(pix = 0; pix < NBpix; pix++)
+            for(int dt = 0; dt < PForder; dt++)
             {
                 data.image[IDmatA].array.F[(NBpix * dt + pix) * NBmvec1 + m] =
                     data.image[ID_WFin]
-                        .array.F[(k0 - dt) * xysize + pixarray_xy[pix]];
+                    .array.F[(k0 - dt) * xysize + pixarray_xy[pix]];
             }
     }
-    if (REG == 1)
+    if(REG == 1)
     {
-        for (int m = 0; m < mvecsize; m++)
+        for(int m = 0; m < mvecsize; m++)
         {
             //m1 = NBmvec + m;
             data.image[IDmatA].array.F[(m) *NBmvec1 + (NBmvec + m)] = RegLambda;
         }
     }
 
-    if (Save == 1)
+    if(Save == 1)
     {
         save_fits("PFmatD", "PFmatD.fits");
     }
@@ -220,7 +220,7 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
                                     NULL);
 #endif
 
-    if (0)
+    if(0)
     {
         save_fits("PFmatD", "test_PFmatD.fits");
         save_fits("PFmatC", "test_PFmatC.fits");
@@ -247,7 +247,7 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
         exit(0);
     }
 
-    if (Save == 1)
+    if(Save == 1)
     {
         save_fits("PFmatC", "PFmatC.fits");
     }
@@ -262,7 +262,7 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
 
     alpha = PFlag - ((long) PFlag);
 
-    for (PFpix = 0; PFpix < NBpix; PFpix++)
+    for(PFpix = 0; PFpix < NBpix; PFpix++)
     {
         // PFpix is the pixel for which the filter is created
 
@@ -280,26 +280,26 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
 
         // fill in valfarray
 
-        for (int m = 0; m < NBmvec; m++)
+        for(int m = 0; m < NBmvec; m++)
         {
             k0 = m + PForder - 1;
             k0 += (long) PFlag;
 
             valfarray[m] =
                 (1.0 - alpha) *
-                    data.image[ID_WFin]
-                        .array.F[(k0) *xysize + pixarray_xy[PFpix]] +
+                data.image[ID_WFin]
+                .array.F[(k0) * xysize + pixarray_xy[PFpix]] +
                 alpha * data.image[ID_WFin]
-                            .array.F[(k0 + 1) * xysize + pixarray_xy[PFpix]];
+                .array.F[(k0 + 1) * xysize + pixarray_xy[PFpix]];
         }
 
-        for (pix = 0; pix < NBpix; pix++)
+        for(pix = 0; pix < NBpix; pix++)
         {
-            for (int dt = 0; dt < PForder; dt++)
+            for(int dt = 0; dt < PForder; dt++)
             {
                 double val = 0.0;
                 ind1       = (NBpix * dt + pix) * NBmvec1;
-                for (int m = 0; m < NBmvec; m++)
+                for(int m = 0; m < NBmvec; m++)
                 {
                     val += data.image[IDmatC].array.F[ind1 + m] * valfarray[m];
                 }
@@ -307,7 +307,7 @@ int AtmosphericTurbulence_Build_LinPredictor_Full(
                 data.image[ID_Pfilt].array.F[xysize * dt + pixarray_xy[pix]] =
                     val;
                 data.image[IDfiltC]
-                    .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix] = val;
+                .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix] = val;
             }
         }
         save_fits(filtname, filtfname);
@@ -365,9 +365,9 @@ imageID AtmosphericTurbulence_LinPredictor_filt_2DKernelExtract(
 
     long NBpix1 = 0;
     {
-        for (uint32_t ii = 0; ii < xsize; ii++)
-            for (uint32_t jj = 0; jj < ysize; jj++)
-                if (data.image[IDmask].array.F[jj * xsize + ii] > 0.5)
+        for(uint32_t ii = 0; ii < xsize; ii++)
+            for(uint32_t jj = 0; jj < ysize; jj++)
+                if(data.image[IDmask].array.F[jj * xsize + ii] > 0.5)
                 {
                     pixarray_x[NBpix1]  = ii;
                     pixarray_y[NBpix1]  = jj;
@@ -383,16 +383,16 @@ imageID AtmosphericTurbulence_LinPredictor_filt_2DKernelExtract(
     create_3Dimage_ID("kerncnt", xksize, yksize, PForder, &IDkern_cnt);
 
     // extract 2D kernel
-    for (PFpix = 0; PFpix < NBpix; PFpix++)
+    for(PFpix = 0; PFpix < NBpix; PFpix++)
     {
         // PFpix is the pixel for which the filter is created
 
         uint32_t iifilt = pixarray_x[PFpix];
         uint32_t jjfilt = pixarray_y[PFpix];
 
-        for (dt = 0; dt < PForder; dt++)
+        for(dt = 0; dt < PForder; dt++)
         {
-            for (pix = 0; pix < NBpix; pix++)
+            for(pix = 0; pix < NBpix; pix++)
             {
                 uint32_t ii = pixarray_x[pix];
                 uint32_t jj = pixarray_y[pix];
@@ -400,29 +400,29 @@ imageID AtmosphericTurbulence_LinPredictor_filt_2DKernelExtract(
                 long dii = ii - iifilt;
                 long djj = jj - jjfilt;
 
-                if (dii * dii + djj * djj < krad * krad)
+                if(dii * dii + djj * djj < krad * krad)
                 {
                     data.image[IDkern]
-                        .array.F[dt * xksize * yksize + (djj + krad) * xksize +
-                                 dii + krad] +=
-                        data.image[IDfilt]
-                            .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix];
+                    .array.F[dt * xksize * yksize + (djj + krad) * xksize +
+                                dii + krad] +=
+                                 data.image[IDfilt]
+                                 .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix];
                     data.image[IDkern_cnt]
-                        .array.F[dt * xksize * yksize + (djj + krad) * xksize +
-                                 dii + krad] += 1.0;
+                    .array.F[dt * xksize * yksize + (djj + krad) * xksize +
+                                dii + krad] += 1.0;
                 }
             }
         }
     }
 
-    for (uint32_t ii = 0; ii < xksize; ii++)
-        for (uint32_t jj = 0; jj < yksize; jj++)
-            for (dt = 0; dt < PForder; dt++)
+    for(uint32_t ii = 0; ii < xksize; ii++)
+        for(uint32_t jj = 0; jj < yksize; jj++)
+            for(dt = 0; dt < PForder; dt++)
             {
                 data.image[IDkern]
-                    .array.F[dt * xksize * yksize + jj * xksize + ii] /=
+                .array.F[dt * xksize * yksize + jj * xksize + ii] /=
                     (data.image[IDkern_cnt]
-                         .array.F[dt * xksize * yksize + jj * xksize + ii] +
+                     .array.F[dt * xksize * yksize + jj * xksize + ii] +
                      1.0e-8);
             }
 
@@ -431,14 +431,14 @@ imageID AtmosphericTurbulence_LinPredictor_filt_2DKernelExtract(
     create_3Dimage_ID("filtCkcnt", NBpix, NBpix, PForder, &IDfiltC1cnt);
 
     create_2Dimage_ID("filtCkn", xsize, ysize, &IDfiltC1n);
-    for (PFpix = 0; PFpix < NBpix; PFpix++)
+    for(PFpix = 0; PFpix < NBpix; PFpix++)
     {
         tmp1            = 0.0;
         uint32_t iifilt = pixarray_x[PFpix];
         uint32_t jjfilt = pixarray_y[PFpix];
-        for (dt = 0; dt < PForder; dt++)
+        for(dt = 0; dt < PForder; dt++)
         {
-            for (pix = 0; pix < NBpix; pix++)
+            for(pix = 0; pix < NBpix; pix++)
             {
                 uint32_t ii = pixarray_x[pix];
                 uint32_t jj = pixarray_y[pix];
@@ -446,15 +446,15 @@ imageID AtmosphericTurbulence_LinPredictor_filt_2DKernelExtract(
                 long dii = ii - iifilt;
                 long djj = jj - jjfilt;
 
-                if ((dii * dii + djj * djj) < (krad * krad))
+                if((dii * dii + djj * djj) < (krad * krad))
                 {
                     data.image[IDfiltC1]
-                        .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix] =
+                    .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix] =
                         data.image[IDkern]
-                            .array.F[dt * xksize * yksize +
-                                     (djj + krad) * xksize + dii + krad];
+                        .array.F[dt * xksize * yksize +
+                                    (djj + krad) * xksize + dii + krad];
                     data.image[IDfiltC1cnt]
-                        .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix] =
+                    .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix] =
                         1.0;
                 }
             }
@@ -464,84 +464,84 @@ imageID AtmosphericTurbulence_LinPredictor_filt_2DKernelExtract(
     // remove offset
     create_3Dimage_ID("filtCk2", NBpix, NBpix, PForder, &IDfiltC2);
     create_2Dimage_ID("filtC2n", xsize, ysize, &IDfiltC2n);
-    for (dt = 0; dt < PForder; dt++)
+    for(dt = 0; dt < PForder; dt++)
     {
-        for (PFpix = 0; PFpix < NBpix; PFpix++)
+        for(PFpix = 0; PFpix < NBpix; PFpix++)
         {
             tmp1 = 0.0;
             tmp2 = 0.0;
 
-            for (pix = 0; pix < NBpix; pix++)
+            for(pix = 0; pix < NBpix; pix++)
             {
                 tmp1 += data.image[IDfiltC1cnt]
-                            .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix];
+                        .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix];
                 tmp2 += data.image[IDfiltC1]
-                            .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix];
+                        .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix];
             }
             tmp1 = 1.0 * NBpix - tmp1;
 
-            for (pix = 0; pix < NBpix; pix++)
+            for(pix = 0; pix < NBpix; pix++)
             {
                 data.image[IDfiltC1]
-                    .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix] -=
+                .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix] -=
                     (1.0 -
                      data.image[IDfiltC1cnt]
-                         .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix]) *
+                     .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix]) *
                     (tmp2 / tmp1);
 
                 // non piston-compensated
                 data.image[IDfiltC2]
-                    .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix] =
+                .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix] =
                     data.image[IDfiltC1]
-                        .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix] +
+                    .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix] +
                     tmp2 / tmp1;
             }
         }
     }
 
-    for (PFpix = 0; PFpix < NBpix; PFpix++)
+    for(PFpix = 0; PFpix < NBpix; PFpix++)
     {
         tmp1 = 0.0;
-        for (dt = 0; dt < PForder; dt++)
-            for (pix = 0; pix < NBpix; pix++)
+        for(dt = 0; dt < PForder; dt++)
+            for(pix = 0; pix < NBpix; pix++)
             {
                 tmp1 += data.image[IDfiltC2]
-                            .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix];
+                        .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix];
             }
         data.image[IDfiltC2n].array.F[pixarray_xy[PFpix]] = tmp1;
     }
 
     // rescale edge gain effect
-    for (dt = 0; dt < PForder; dt++)
+    for(dt = 0; dt < PForder; dt++)
     {
-        for (PFpix = 0; PFpix < NBpix; PFpix++)
+        for(PFpix = 0; PFpix < NBpix; PFpix++)
         {
-            if (data.image[IDfiltC2n].array.F[pixarray_xy[PFpix]] > 0.01)
+            if(data.image[IDfiltC2n].array.F[pixarray_xy[PFpix]] > 0.01)
             {
                 gain = 1.0 / data.image[IDfiltC2n].array.F[pixarray_xy[PFpix]];
             }
             tmp1 = 0.0;
             tmp2 = 0.0;
-            for (pix = 0; pix < NBpix; pix++)
+            for(pix = 0; pix < NBpix; pix++)
             {
                 data.image[IDfiltC2]
-                    .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix] *= gain;
+                .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix] *= gain;
                 tmp1 += 1.0;
                 tmp2 += data.image[IDfiltC2]
-                            .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix];
+                        .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix];
             }
 
-            for (pix = 0; pix < NBpix; pix++)
+            for(pix = 0; pix < NBpix; pix++)
             {
                 data.image[IDfiltC2]
-                    .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix] -=
+                .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix] -=
                     (tmp2 / tmp1);
             }
         }
     }
 
     // expand into individual filters
-    for (PFpix = 0; PFpix < NBpix; PFpix++)
+    for(PFpix = 0; PFpix < NBpix; PFpix++)
     {
         sprintf(filtname,
                 "PFfilt_%06lu_%03u_%03u",
@@ -555,14 +555,14 @@ imageID AtmosphericTurbulence_LinPredictor_filt_2DKernelExtract(
                 pixarray_y[PFpix]);
         create_3Dimage_ID(filtname, xsize, ysize, PForder, &ID_Pfilt);
         tmp1 = 0.0;
-        for (dt = 0; dt < PForder; dt++)
-            for (pix = 0; pix < NBpix; pix++)
+        for(dt = 0; dt < PForder; dt++)
+            for(pix = 0; pix < NBpix; pix++)
             {
                 data.image[ID_Pfilt].array.F[xysize * dt + pixarray_xy[pix]] =
                     data.image[IDfiltC2]
-                        .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix];
+                    .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix];
                 tmp1 += data.image[ID_Pfilt]
-                            .array.F[xysize * dt + pixarray_xy[pix]];
+                        .array.F[xysize * dt + pixarray_xy[pix]];
             }
         save_fits(filtname, filtfname);
         data.image[IDfiltC1n].array.F[pixarray_xy[PFpix]] = tmp1;
@@ -599,9 +599,9 @@ long AtmosphericTurbulence_LinPredictor_filt_Expand(
     uint64_t *pixarray_xy = (uint64_t *) malloc(sizeof(uint64_t) * NBpix);
 
     uint32_t NBpix1 = 0;
-    for (uint32_t ii = 0; ii < xsize; ii++)
-        for (uint32_t jj = 0; jj < ysize; jj++)
-            if (data.image[IDmask].array.F[jj * xsize + ii] > 0.5)
+    for(uint32_t ii = 0; ii < xsize; ii++)
+        for(uint32_t jj = 0; jj < ysize; jj++)
+            if(data.image[IDmask].array.F[jj * xsize + ii] > 0.5)
             {
                 pixarray_x[NBpix1]  = ii;
                 pixarray_y[NBpix1]  = jj;
@@ -620,7 +620,7 @@ long AtmosphericTurbulence_LinPredictor_filt_Expand(
     create_2Dimage_ID("filtmap_tau", xsize, ysize, &IDtau);
 
     // expand into individual filters
-    for (uint32_t PFpix = 0; PFpix < NBpix; PFpix++)
+    for(uint32_t PFpix = 0; PFpix < NBpix; PFpix++)
     {
         sprintf(filtname,
                 "PFfilt_%06lu_%03u_%03u",
@@ -639,23 +639,23 @@ long AtmosphericTurbulence_LinPredictor_filt_Expand(
         double norm1 = 0.0;
         double norm2 = 0.0;
 
-        for (uint32_t dt = 0; dt < PForder; dt++)
-            for (uint32_t pix = 0; pix < NBpix; pix++)
+        for(uint32_t dt = 0; dt < PForder; dt++)
+            for(uint32_t pix = 0; pix < NBpix; pix++)
             {
                 data.image[ID_Pfilt].array.F[xysize * dt + pixarray_xy[pix]] =
                     data.image[IDfilt]
-                        .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix];
+                    .array.F[dt * NBpix * NBpix + PFpix * NBpix + pix];
 
                 norm1 += fabs(data.image[ID_Pfilt]
-                                  .array.F[xysize * dt + pixarray_xy[pix]]);
+                              .array.F[xysize * dt + pixarray_xy[pix]]);
                 norm2 += data.image[ID_Pfilt]
-                             .array.F[xysize * dt + pixarray_xy[pix]] *
+                         .array.F[xysize * dt + pixarray_xy[pix]] *
                          data.image[ID_Pfilt]
-                             .array.F[xysize * dt + pixarray_xy[pix]];
+                         .array.F[xysize * dt + pixarray_xy[pix]];
                 tau += data.image[ID_Pfilt]
-                           .array.F[xysize * dt + pixarray_xy[pix]] *
+                       .array.F[xysize * dt + pixarray_xy[pix]] *
                        data.image[ID_Pfilt]
-                           .array.F[xysize * dt + pixarray_xy[pix]] *
+                       .array.F[xysize * dt + pixarray_xy[pix]] *
                        dt;
             }
         tau /= norm2;
@@ -719,7 +719,7 @@ int AtmosphericTurbulence_Apply_LinPredictor_Full(
     create_3Dimage_ID(WFoutf_name, xsize, ysize, zsize, &IDoutf);
 
     imageID IDreft = image_ID("reft");
-    if (IDreft != -1)
+    if(IDreft != -1)
     {
         create_3Dimage_ID("outft", xsize, ysize, zsize, &IDoutft);
         create_3Dimage_ID("outp_res", xsize, ysize, zsize, &IDoutp_res);
@@ -731,9 +731,9 @@ int AtmosphericTurbulence_Apply_LinPredictor_Full(
 
     long NBpix = 0;
     {
-        for (uint32_t ii = 0; ii < xsize * ysize; ii++)
+        for(uint32_t ii = 0; ii < xsize * ysize; ii++)
         {
-            if (data.image[ID_WFmask].array.F[ii] > 0.5)
+            if(data.image[ID_WFmask].array.F[ii] > 0.5)
             {
                 NBpix++;
             }
@@ -750,11 +750,11 @@ int AtmosphericTurbulence_Apply_LinPredictor_Full(
 
     double totm = 0.0;
     {
-        for (uint32_t ii = 0; ii < xsize; ii++)
+        for(uint32_t ii = 0; ii < xsize; ii++)
         {
-            for (uint32_t jj = 0; jj < ysize; jj++)
+            for(uint32_t jj = 0; jj < ysize; jj++)
             {
-                if (data.image[ID_WFmask].array.F[jj * xsize + ii] > 0.5)
+                if(data.image[ID_WFmask].array.F[jj * xsize + ii] > 0.5)
                 {
                     totm += 1.0;
                 }
@@ -763,11 +763,11 @@ int AtmosphericTurbulence_Apply_LinPredictor_Full(
     }
 
     NBpix = 0;
-    for (uint32_t ii = 0; ii < xsize; ii++)
+    for(uint32_t ii = 0; ii < xsize; ii++)
     {
-        for (uint32_t jj = 0; jj < ysize; jj++)
+        for(uint32_t jj = 0; jj < ysize; jj++)
         {
-            if (data.image[ID_WFmask].array.F[jj * xsize + ii] > 0.5)
+            if(data.image[ID_WFmask].array.F[jj * xsize + ii] > 0.5)
             {
                 pixarray_x[NBpix]  = ii;
                 pixarray_y[NBpix]  = jj;
@@ -783,7 +783,7 @@ int AtmosphericTurbulence_Apply_LinPredictor_Full(
 
     printf("Read and Apply filters\n");
     fflush(stdout);
-    for (long PFpix = 0; PFpix < NBpix; PFpix++)
+    for(long PFpix = 0; PFpix < NBpix; PFpix++)
     {
         char filtname[STRINGMAXLEN_IMGNAME];
         WRITE_IMAGENAME(filtname,
@@ -792,7 +792,7 @@ int AtmosphericTurbulence_Apply_LinPredictor_Full(
                         pixarray_x[PFpix],
                         pixarray_y[PFpix]);
 
-        if (MODE == 0)
+        if(MODE == 0)
         {
             char filtfname[STRINGMAXLEN_FULLFILENAME];
             WRITE_FULLFILENAME(filtfname,
@@ -806,72 +806,72 @@ int AtmosphericTurbulence_Apply_LinPredictor_Full(
         {
             create_3Dimage_ID(filtname, xsize, ysize, PForder, &ID_Pfilt);
 
-            for (long step = 0; step < PForder; step++)
+            for(long step = 0; step < PForder; step++)
                 data.image[ID_Pfilt]
-                    .array.F[xysize * step + pixarray_y[PFpix] * xsize +
-                             pixarray_x[PFpix]] = 1.0 / PForder;
+                .array.F[xysize * step + pixarray_y[PFpix] * xsize +
+                                pixarray_x[PFpix]] = 1.0 / PForder;
         }
 
-        for (long kk = PForder; kk < zsize; kk++)
+        for(long kk = PForder; kk < zsize; kk++)
         {
             double valp = 0.0;
-            for (long step = 0; step < PForder; step++)
+            for(long step = 0; step < PForder; step++)
             {
-                for (uint64_t ii = 0; ii < xsize * ysize; ii++)
+                for(uint64_t ii = 0; ii < xsize * ysize; ii++)
                     valp +=
                         data.image[ID_Pfilt].array.F[xysize * step + ii] *
                         data.image[ID_WFin].array.F[(kk - step) * xysize + ii];
             }
 
             double valf = 0.0;
-            if (kk + PFlag + 1 < zsize)
+            if(kk + PFlag + 1 < zsize)
             {
                 valf =
                     (1.0 - alpha) *
-                        data.image[ID_WFin].array.F[(kk + PFlagl) * xysize +
-                                                    pixarray_xy[PFpix]] +
+                    data.image[ID_WFin].array.F[(kk + PFlagl) * xysize +
+                                                pixarray_xy[PFpix]] +
                     alpha *
-                        data.image[ID_WFin].array.F[(kk + PFlagl + 1) * xysize +
-                                                    pixarray_xy[PFpix]];
+                    data.image[ID_WFin].array.F[(kk + PFlagl + 1) * xysize +
+                                                pixarray_xy[PFpix]];
             }
 
             double valft = 0.0;
-            if (kk + PFlag + 1 < zsize)
+            if(kk + PFlag + 1 < zsize)
             {
                 valft =
                     (1.0 - alpha) *
-                        data.image[IDreft].array.F[(kk + PFlagl) * xysize +
-                                                   pixarray_xy[PFpix]] +
+                    data.image[IDreft].array.F[(kk + PFlagl) * xysize +
+                                               pixarray_xy[PFpix]] +
                     alpha *
-                        data.image[IDreft].array.F[(kk + PFlagl + 1) * xysize +
-                                                   pixarray_xy[PFpix]];
+                    data.image[IDreft].array.F[(kk + PFlagl + 1) * xysize +
+                                               pixarray_xy[PFpix]];
             }
 
             data.image[IDoutp].array.F[kk * xysize + pixarray_xy[PFpix]] = valp;
             data.image[IDoutf].array.F[kk * xysize + pixarray_xy[PFpix]] = valf;
 
-            if (IDreft != -1)
+            if(IDreft != -1)
             {
                 valft = 0.0;
-                if (kk + PFlag + 1 < zsize)
+                if(kk + PFlag + 1 < zsize)
                     valft =
                         (1.0 - alpha) *
-                            data.image[IDreft].array.F[(kk + PFlagl) * xysize +
-                                                       pixarray_xy[PFpix]] +
+                        data.image[IDreft].array.F[(kk + PFlagl) * xysize +
+                                                   pixarray_xy[PFpix]] +
                         alpha * data.image[IDreft]
-                                    .array.F[(kk + PFlagl + 1) * xysize +
-                                             pixarray_xy[PFpix]];
+                        .array.F[(kk + PFlagl + 1) * xysize +
+                                                   pixarray_xy[PFpix]];
                 data.image[IDoutft].array.F[kk * xysize + pixarray_xy[PFpix]] =
                     valft;
 
                 data.image[IDoutp_res]
-                    .array.F[kk * xysize + pixarray_xy[PFpix]] = valp - valft;
+                .array.F[kk * xysize + pixarray_xy[PFpix]] = valp - valft;
                 data.image[IDoutf_res]
-                    .array.F[kk * xysize + pixarray_xy[PFpix]] = valf - valft;
+                .array.F[kk * xysize + pixarray_xy[PFpix]] = valf - valft;
                 data.image[IDoutl_res]
-                    .array.F[kk * xysize + pixarray_xy[PFpix]] =
+                .array.F[kk * xysize + pixarray_xy[PFpix]] =
                     data.image[ID_WFin]
-                        .array.F[kk * xysize + pixarray_xy[PFpix]] -
+                    .array.F[kk * xysize + pixarray_xy[PFpix]] -
                     valft;
             }
         }
@@ -888,13 +888,13 @@ int AtmosphericTurbulence_Apply_LinPredictor_Full(
 // use past and near pixels to predict current pixel value ( single pixel )
 
 int AtmosphericTurbulence_Build_LinPredictor(long   NB_WFstep,
-                                             double WFphaNoise,
-                                             long   WFPlag,
-                                             long   WFP_NBstep,
-                                             long   WFP_xyrad,
-                                             long   WFPiipix,
-                                             long   WFPjjpix,
-                                             float  slambdaum)
+        double WFphaNoise,
+        long   WFPlag,
+        long   WFP_NBstep,
+        long   WFP_xyrad,
+        long   WFPiipix,
+        long   WFPjjpix,
+        float  slambdaum)
 {
     int GHA = 0;
 
@@ -963,7 +963,7 @@ int AtmosphericTurbulence_Build_LinPredictor(long   NB_WFstep,
 
     SLAMBDA = 1.0e-6 * slambdaum;
 
-    if ((vID = variable_ID("SVDeps")) != -1)
+    if((vID = variable_ID("SVDeps")) != -1)
     {
         SVDeps = data.variable[vID].value.f;
         printf("SVDeps = %f\n", SVDeps);
@@ -993,7 +993,7 @@ int AtmosphericTurbulence_Build_LinPredictor(long   NB_WFstep,
                       &IDpha_measured);
 
     IDpupamp = image_ID("ST_pa");
-    if (IDpupamp == -1)
+    if(IDpupamp == -1)
     {
         printf("ERROR: pupil amplitude map not loaded");
         exit(0);
@@ -1001,18 +1001,18 @@ int AtmosphericTurbulence_Build_LinPredictor(long   NB_WFstep,
 
     naxes[0] = data.image[IDpupamp].md[0].size[0];
     naxes[1] = data.image[IDpupamp].md[0].size[1];
-    NBFRAMES = (long) (atmturbconf.TimeSpanCube / atmturbconf.TimeStep);
+    NBFRAMES = (long)(atmturbconf.TimeSpanCube / atmturbconf.TimeStep);
 
     printf("NBFRAMES = %ld\n", NBFRAMES);
 
     IDpupmask = image_ID("pupmask");
-    if (IDpupmask == -1)
+    if(IDpupmask == -1)
     {
         printf("ERROR: pupil mask not loaded");
         exit(0);
     }
 
-    if (GHA == 1)
+    if(GHA == 1)
     {
         // prepare GHA
         // matrix convention
@@ -1030,23 +1030,23 @@ int AtmosphericTurbulence_Build_LinPredictor(long   NB_WFstep,
         create_2Dimage_ID("GHA_zzT", GHA_m, GHA_m, &ID_GHA_zzT); // m x m matrix
 
         // initialization: set GHA_UT to Identity square matrix
-        for (uint32_t ii = 0; ii < GHA_m; ii++)
-            for (uint32_t jj = 0; jj < GHA_m; jj++)
+        for(uint32_t ii = 0; ii < GHA_m; ii++)
+            for(uint32_t jj = 0; jj < GHA_m; jj++)
             {
                 data.image[ID_GHA_UT].array.F[jj * GHA_m + ii] = 0.0;
             }
-        for (uint32_t ii = 0; ii < GHA_m; ii++)
+        for(uint32_t ii = 0; ii < GHA_m; ii++)
         {
             data.image[ID_GHA_UT].array.F[ii * GHA_m + ii] = 1.0;
         }
 
         // set NT elements
-        for (uint32_t ii = 0; ii < GHA_m; ii++)
-            for (uint32_t jj = 0; jj < GHA_n; jj++)
+        for(uint32_t ii = 0; ii < GHA_m; ii++)
+            for(uint32_t jj = 0; jj < GHA_n; jj++)
             {
                 data.image[ID_GHA_NT].array.F[jj * GHA_m + ii] = 0.0;
             }
-        for (uint32_t ii = 0; ii < GHA_m; ii++)
+        for(uint32_t ii = 0; ii < GHA_m; ii++)
         {
             data.image[ID_GHA_NT].array.F[ii * GHA_m + ii] = 1.0;
         }
@@ -1058,7 +1058,7 @@ int AtmosphericTurbulence_Build_LinPredictor(long   NB_WFstep,
     printf("\n\n");
     cnt    = 0;
     cntval = 0.0;
-    while (k < NB_WFstep)
+    while(k < NB_WFstep)
     {
         char fnamepha[STRINGMAXLEN_FILENAME];
         char fnameamp[STRINGMAXLEN_FILENAME];
@@ -1071,48 +1071,48 @@ int AtmosphericTurbulence_Build_LinPredictor(long   NB_WFstep,
                        "%s%08ld.%09ld.pha.fits",
                        atmturbconf.SWFfileprefix,
                        tspan,
-                       (long) (1.0e12 * SLAMBDA + 0.5));
+                       (long)(1.0e12 * SLAMBDA + 0.5));
 
         WRITE_FILENAME(fnameamp,
                        "%s%08ld.%09ld.amp.fits",
                        atmturbconf.SWFfileprefix,
                        tspan,
-                       (long) (1.0e12 * SLAMBDA + 0.5));
+                       (long)(1.0e12 * SLAMBDA + 0.5));
 
         load_fits(fnamepha, "wfpha", LOADFITS_ERRMODE_WARNING, &IDpha);
 
-        for (frame = 0; frame < NBFRAMES; frame++)
+        for(frame = 0; frame < NBFRAMES; frame++)
         {
             printf("\r      %4ld/%4ld   tspan = %4ld   ", k, NB_WFstep, tspan);
             fflush(stdout);
             cnt    = 0;
             cntval = 0.0;
-            if (k < NB_WFstep)
+            if(k < NB_WFstep)
             {
-                for (uint32_t ii = 0; ii < WFPxsize; ii++)
-                    for (uint32_t jj = 0; jj < WFPysize; jj++)
+                for(uint32_t ii = 0; ii < WFPxsize; ii++)
+                    for(uint32_t jj = 0; jj < WFPysize; jj++)
                     {
                         long ii1 = ii0 + (ii - WFP_xyrad);
                         long jj1 = jj0 + (jj - WFP_xyrad);
-                        if ((ii1 > 0) && (ii1 < atmturbconf.WFsize) &&
-                            (jj1 > 0) && (jj1 < atmturbconf.WFsize))
+                        if((ii1 > 0) && (ii1 < atmturbconf.WFsize) &&
+                                (jj1 > 0) && (jj1 < atmturbconf.WFsize))
                         {
                             pha = data.image[IDpha]
-                                      .array.F[frame * naxes[0] * naxes[1] +
-                                               jj1 * naxes[0] + ii1];
+                                  .array.F[frame * naxes[0] * naxes[1] +
+                                                 jj1 * naxes[0] + ii1];
                         }
                         else
                         {
                             pha = 0;
                         }
                         data.image[IDpha_measured]
-                            .array
-                            .F[k * WFPxsize * WFPysize + jj * WFPxsize + ii] =
+                        .array
+                        .F[k * WFPxsize * WFPysize + jj * WFPxsize + ii] =
                             gauss() * WFphaNoise + pha;
                         cnt++;
                         cntval += data.image[IDpha_measured]
-                                      .array.F[k * WFPxsize * WFPysize +
-                                               jj * WFPxsize + ii];
+                                  .array.F[k * WFPxsize * WFPysize +
+                                             jj * WFPxsize + ii];
                     }
                 //            for(ii=0; ii<WFPxsize*WFPysize; ii++)
                 //                  data.image[IDpha_measured].array.F[k*WFPxsize*WFPysize+ii] -= cntval/cnt;
@@ -1126,7 +1126,7 @@ int AtmosphericTurbulence_Build_LinPredictor(long   NB_WFstep,
     //    for(ii=0; ii<WFPxsize*WFPysize*NB_WFstep; ii++)
     //      data.image[IDpha_measured].array.F[ii] -= cntval/cnt;
 
-    if (Save == 1)
+    if(Save == 1)
     {
         save_fits("WFP_pham", "WFP_pham.fits");
     }
@@ -1142,21 +1142,21 @@ int AtmosphericTurbulence_Build_LinPredictor(long   NB_WFstep,
     // l = pixel index
 
     l = 0;
-    for (k = WFPlag; k < WFP_NBstep; k++)
+    for(k = WFPlag; k < WFP_NBstep; k++)
     {
 
-        for (uint32_t ii = 0; ii < WFPxsize; ii++)
-            for (uint32_t jj = 0; jj < WFPysize; jj++)
+        for(uint32_t ii = 0; ii < WFPxsize; ii++)
+            for(uint32_t jj = 0; jj < WFPysize; jj++)
             {
                 mvecdx[l] = ii - WFP_xyrad;
                 mvecdy[l] = jj - WFP_xyrad;
                 mvecdz[l] = k;
 
-                if ((data.image[IDpupmask]
-                         .array.F[(jj0 + mvecdy[l]) * naxes[0] +
-                                  (ii0 + mvecdx[l])] > 0.1) &&
-                    (sqrt(mvecdx[l] * mvecdx[l] + mvecdy[l] * mvecdy[l]) <
-                     2.0 + maxPixSpeed * (k + 1)))
+                if((data.image[IDpupmask]
+                        .array.F[(jj0 + mvecdy[l]) * naxes[0] +
+                                                   (ii0 + mvecdx[l])] > 0.1) &&
+                        (sqrt(mvecdx[l] * mvecdx[l] + mvecdy[l] * mvecdy[l]) <
+                         2.0 + maxPixSpeed * (k + 1)))
                 {
                     l++;
                 }
@@ -1170,31 +1170,31 @@ int AtmosphericTurbulence_Build_LinPredictor(long   NB_WFstep,
     // each column is a measurement
     // m index is measurement
     // l index is pixel
-    for (m = 0; m < NBmvec; m++)
+    for(m = 0; m < NBmvec; m++)
     {
         k0 = m + WFP_NBstep;
-        for (l = 0; l < mvecsize; l++)
+        for(l = 0; l < mvecsize; l++)
         {
             data.image[IDmatA].array.F[l * NBmvec + m] =
                 data.image[IDpha_measured]
-                    .array.F[(k0 - mvecdz[l]) * WFPxsize * WFPysize +
-                             (mvecdy[l] + WFP_xyrad) * WFPxsize +
-                             (mvecdx[l] + WFP_xyrad)];
+                .array.F[(k0 - mvecdz[l]) * WFPxsize * WFPysize +
+                                          (mvecdy[l] + WFP_xyrad) * WFPxsize +
+                                          (mvecdx[l] + WFP_xyrad)];
         }
     }
 
-    if (GHA == 1)
+    if(GHA == 1)
     {
         // for GHA: compute differences
         create_2Dimage_ID("GHAmatA", NBmvec, mvecsize, &ID_GHA_matA);
-        for (k = 0; k < NB_WFstep; k++)
+        for(k = 0; k < NB_WFstep; k++)
         {
             k1 = k + 50; // 50 frames offset
-            if (k1 > NB_WFstep - 1)
+            if(k1 > NB_WFstep - 1)
             {
                 k1 -= NB_WFstep;
             }
-            for (l = 0; l < mvecsize; l++)
+            for(l = 0; l < mvecsize; l++)
             {
                 data.image[ID_GHA_matA].array.F[l * NBmvec + k] =
                     data.image[IDmatA].array.F[l * NBmvec + k] -
@@ -1203,38 +1203,38 @@ int AtmosphericTurbulence_Build_LinPredictor(long   NB_WFstep,
         }
     }
 
-    if (Save == 1)
+    if(Save == 1)
     {
         save_fits("WFPmatA", "WFPmatA.fits");
-        if (GHA == 1)
+        if(GHA == 1)
         {
             save_fits("GHAmatA", "GHAmatA.fits");
         }
     }
 
-    if (GHA == 1)
+    if(GHA == 1)
     {
         // run GHA
         printf("\n");
         printf("RUNNING GHA  %ld x %ld  [%ld]... \n", GHA_m, GHA_n, NBmvec);
         fflush(stdout);
-        for (GHAiter = 0; GHAiter < GHA_NBiter; GHAiter++)
+        for(GHAiter = 0; GHAiter < GHA_NBiter; GHAiter++)
         {
             errval = 0.0;
-            for (k = 0; k < NBmvec; k++)
+            for(k = 0; k < NBmvec; k++)
             {
                 //printf("\n %ld\n", k);
                 //fflush(stdout);
 
                 // initialize input vector x
-                for (uint32_t ii = 0; ii < GHA_n; ii++)
+                for(uint32_t ii = 0; ii < GHA_n; ii++)
                 {
                     data.image[ID_GHA_x].array.F[ii] =
                         data.image[ID_GHA_matA].array.F[ii * NBmvec + k];
                 }
 
                 // initialize output vector y
-                for (uint32_t ii = 0; ii < GHA_m; ii++)
+                for(uint32_t ii = 0; ii < GHA_m; ii++)
                 {
                     data.image[ID_GHA_y].array.F[ii] =
                         data.image[ID_GHA_x].array.F[60];
@@ -1243,13 +1243,13 @@ int AtmosphericTurbulence_Build_LinPredictor(long   NB_WFstep,
                 //data.image[ID_GHA_x].array.F[24];
 
                 // Compute vector z = UT y
-                for (uint32_t ii = 0; ii < GHA_m; ii++)
+                for(uint32_t ii = 0; ii < GHA_m; ii++)
                 {
                     data.image[ID_GHA_z].array.F[ii] = 0.0;
                 }
 
-                for (uint32_t ii = 0; ii < GHA_m; ii++)
-                    for (uint32_t jj = 0; jj < GHA_m; jj++)
+                for(uint32_t ii = 0; ii < GHA_m; ii++)
+                    for(uint32_t jj = 0; jj < GHA_m; jj++)
                     {
                         data.image[ID_GHA_z].array.F[ii] +=
                             data.image[ID_GHA_UT].array.F[jj * GHA_m + ii] *
@@ -1257,9 +1257,9 @@ int AtmosphericTurbulence_Build_LinPredictor(long   NB_WFstep,
                     }
 
                 // compute LT[zzT]
-                for (uint32_t ii = 0; ii < GHA_m; ii++)
-                    for (uint32_t jj = 0; jj < GHA_m; jj++)
-                        if (jj <= ii)
+                for(uint32_t ii = 0; ii < GHA_m; ii++)
+                    for(uint32_t jj = 0; jj < GHA_m; jj++)
+                        if(jj <= ii)
                         {
                             data.image[ID_GHA_zzT].array.F[jj * GHA_m + ii] =
                                 data.image[ID_GHA_z].array.F[ii] *
@@ -1267,18 +1267,18 @@ int AtmosphericTurbulence_Build_LinPredictor(long   NB_WFstep,
                         }
 
                 // update UT
-                for (uint32_t ii = 0; ii < GHA_m; ii++)
-                    for (uint32_t jj = 0; jj < GHA_m; jj++)
+                for(uint32_t ii = 0; ii < GHA_m; ii++)
+                    for(uint32_t jj = 0; jj < GHA_m; jj++)
                     {
                         dval = 0.0;
                         dval = data.image[ID_GHA_z].array.F[ii] *
                                data.image[ID_GHA_y].array.F[jj]; // z yT
                         dval0 = 0.0;
-                        for (ll = 0; ll < GHA_m; ll++)
+                        for(ll = 0; ll < GHA_m; ll++)
                         {
                             dval0 +=
                                 data.image[ID_GHA_zzT]
-                                    .array.F[ll * GHA_m + ii] *
+                                .array.F[ll * GHA_m + ii] *
                                 data.image[ID_GHA_UT].array.F[jj * GHA_m + ll];
                         }
                         dval -= dval0;
@@ -1289,18 +1289,18 @@ int AtmosphericTurbulence_Build_LinPredictor(long   NB_WFstep,
 
                 // update NT
                 errval = 0.0;
-                for (uint32_t ii = 0; ii < GHA_m; ii++)
-                    for (uint32_t jj = 0; jj < GHA_n; jj++)
+                for(uint32_t ii = 0; ii < GHA_m; ii++)
+                    for(uint32_t jj = 0; jj < GHA_n; jj++)
                     {
                         dval = 0.0;
                         dval = data.image[ID_GHA_z].array.F[ii] *
                                data.image[ID_GHA_x].array.F[jj]; // z xT
                         dval0 = 0.0;
-                        for (ll = 0; ll < GHA_m; ll++)
+                        for(ll = 0; ll < GHA_m; ll++)
                         {
                             dval0 +=
                                 data.image[ID_GHA_zzT]
-                                    .array.F[ll * GHA_m + ii] *
+                                .array.F[ll * GHA_m + ii] *
                                 data.image[ID_GHA_NT].array.F[jj * GHA_m + ll];
                         }
                         dval -= dval0;
@@ -1321,7 +1321,7 @@ int AtmosphericTurbulence_Build_LinPredictor(long   NB_WFstep,
         printf("done\n");
         fflush(stdout);
 
-        if (Save == 1)
+        if(Save == 1)
         {
             save_fits("GHA_UT", "GHA_UT.fits");
             save_fits("GHA_NT", "GHA_NT.fits");
@@ -1333,17 +1333,17 @@ int AtmosphericTurbulence_Build_LinPredictor(long   NB_WFstep,
         // separate vectors V and singular values
         create_2Dimage_ID("GHA_V", GHA_n, GHA_m, &ID_GHA_V);
         create_2Dimage_ID("GHA_sval", GHA_m, 1, &ID_GHA_sval);
-        for (uint32_t jj = 0; jj < GHA_m; jj++)
+        for(uint32_t jj = 0; jj < GHA_m; jj++)
         {
             val = 0.0;
-            for (uint32_t ii = 0; ii < GHA_n; ii++)
+            for(uint32_t ii = 0; ii < GHA_n; ii++)
             {
                 dval = data.image[ID_GHA_NT].array.F[ii * GHA_m + jj];
                 val += dval * dval;
                 data.image[ID_GHA_V].array.F[jj * GHA_n + ii] = dval;
             }
             val = sqrt(val);
-            for (uint32_t ii = 0; ii < GHA_n; ii++)
+            for(uint32_t ii = 0; ii < GHA_n; ii++)
             {
                 data.image[ID_GHA_V].array.F[jj * GHA_n + ii] /= val;
             }
@@ -1355,11 +1355,11 @@ int AtmosphericTurbulence_Build_LinPredictor(long   NB_WFstep,
         // compute Mest
         create_2Dimage_ID("GHA_Mest", GHA_m, GHA_n, &ID_GHA_Mest);
 
-        for (uint32_t ll = 0; ll < GHA_m; ll++) // singular value index
+        for(uint32_t ll = 0; ll < GHA_m; ll++)  // singular value index
         {
             sval = data.image[ID_GHA_sval].array.F[ll];
-            for (uint32_t jj = 0; jj < GHA_n; jj++)
-                for (uint32_t ii = 0; ii < GHA_m; ii++)
+            for(uint32_t jj = 0; jj < GHA_n; jj++)
+                for(uint32_t ii = 0; ii < GHA_m; ii++)
                 {
                     data.image[ID_GHA_Mest].array.F[jj * GHA_m + ii] +=
                         data.image[ID_GHA_UT].array.F[ii * GHA_m + ll] * sval *
@@ -1373,7 +1373,7 @@ int AtmosphericTurbulence_Build_LinPredictor(long   NB_WFstep,
                           WFP_NBstep,
                           &ID_GHA_WFPfilt);
         offset = WFPxsize * WFPysize * WFPlag;
-        for (k = 0; k < WFPxsize * WFPysize * (WFP_NBstep - WFPlag); k++)
+        for(k = 0; k < WFPxsize * WFPysize * (WFP_NBstep - WFPlag); k++)
         {
             data.image[ID_GHA_WFPfilt].array.F[offset + k] =
                 data.image[ID_GHA_Mest].array.F[k];
@@ -1388,7 +1388,7 @@ int AtmosphericTurbulence_Build_LinPredictor(long   NB_WFstep,
                                     10000,
                                     "WFP_VTmat",
                                     NULL);
-    if (Save == 1)
+    if(Save == 1)
     {
         save_fits("WFPmatC", "WFPmatC.fits");
     }
@@ -1396,15 +1396,15 @@ int AtmosphericTurbulence_Build_LinPredictor(long   NB_WFstep,
 
     create_3Dimage_ID("WFPfilt", WFPxsize, WFPysize, WFP_NBstep, &ID_WFPfilt);
 
-    for (l = 0; l < mvecsize; l++)
+    for(l = 0; l < mvecsize; l++)
     {
         val = 0.0;
-        for (m = 0; m < NBmvec; m++)
+        for(m = 0; m < NBmvec; m++)
         {
             val += data.image[IDmatC].array.F[l * NBmvec + m] *
                    data.image[IDpha_measured]
-                       .array.F[(m + WFP_NBstep) * WFPxsize * WFPysize +
-                                WFP_xyrad * WFPxsize + WFP_xyrad];
+                   .array.F[(m + WFP_NBstep) * WFPxsize * WFPysize +
+                                             WFP_xyrad * WFPxsize + WFP_xyrad];
         }
         // printf("%5ld  ->  %5ld / %5ld     %5ld / %5ld    %5ld / %5ld\n", l, mvecdz[l], WFP_NBstep, mvecdy[l]+WFP_xyrad, WFPysize, mvecdx[l]+WFP_xyrad, WFPxsize);
         data.image[ID_WFPfilt].array.F[WFPxsize * WFPysize * mvecdz[l] +
@@ -1425,10 +1425,10 @@ int AtmosphericTurbulence_Build_LinPredictor(long   NB_WFstep,
         save_fits("WFPfilt", "WFPfilt.fits");
     }
 
-    for (k = WFPlag; k < WFP_NBstep; k++)
+    for(k = WFPlag; k < WFP_NBstep; k++)
     {
         val = 0.0;
-        for (uint64_t ii = 0; ii < WFPxsize * WFPysize; ii++)
+        for(uint64_t ii = 0; ii < WFPxsize * WFPysize; ii++)
         {
             val +=
                 data.image[ID_WFPfilt].array.F[WFPxsize * WFPysize * k + ii] *

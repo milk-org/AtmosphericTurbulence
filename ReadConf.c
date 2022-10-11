@@ -41,7 +41,7 @@ errno_t AtmosphericTurbulence_ReadConf(const char *restrict fnameconf,
 
     // ------------ LOW_FIDELITY OUTPUT AT REF LAMBDA ------------------------------------------------
 
-    if (read_config_parameter_exists(fnameconf, "WFOUTPUT") == 1)
+    if(read_config_parameter_exists(fnameconf, "WFOUTPUT") == 1)
     {
         atmturbconf->flag_WFoutput =
             read_config_parameter_int(fnameconf, "WFOUTPUT");
@@ -49,7 +49,7 @@ errno_t AtmosphericTurbulence_ReadConf(const char *restrict fnameconf,
     read_config_parameter(fnameconf,
                           "WF_FILE_PREFIX",
                           atmturbconf->WFfileprefix);
-    if (read_config_parameter_exists(fnameconf, "SHM_OUTPUT") == 1)
+    if(read_config_parameter_exists(fnameconf, "SHM_OUTPUT") == 1)
     {
         atmturbconf->flag_SHMoutput =
             read_config_parameter_int(fnameconf, "SHM_OUTPUT");
@@ -64,7 +64,7 @@ errno_t AtmosphericTurbulence_ReadConf(const char *restrict fnameconf,
     read_config_parameter(fnameconf,
                           "SWF_FILE_PREFIX",
                           atmturbconf->SWFfileprefix);
-    if (read_config_parameter_exists(fnameconf, "SHM_SOUTPUT") == 1)
+    if(read_config_parameter_exists(fnameconf, "SHM_SOUTPUT") == 1)
     {
         atmturbconf->flag_SWF_SHMoutput =
             read_config_parameter_int(fnameconf, "SHM_SOUTPUT");
@@ -99,7 +99,7 @@ errno_t AtmosphericTurbulence_ReadConf(const char *restrict fnameconf,
 
     // ------------ COMPUTATION PARAMETERS, MODES --------------------------------
 
-    if (read_config_parameter_exists(fnameconf, "SKIP_EXISTING") == 1)
+    if(read_config_parameter_exists(fnameconf, "SKIP_EXISTING") == 1)
     {
         atmturbconf->flag_SkipExisting =
             read_config_parameter_int(fnameconf, "SKIP_EXISTING");
@@ -119,7 +119,7 @@ errno_t AtmosphericTurbulence_ReadConf(const char *restrict fnameconf,
     atmturbconf->flag_WFampl =
         read_config_parameter_int(fnameconf, "WAVEFRONT_AMPLITUDE");
 
-    if (atmturbconf->flag_WFampl == 1)
+    if(atmturbconf->flag_WFampl == 1)
     {
         atmturbconf->flag_FresnelProp =
             read_config_parameter_int(fnameconf, "FRESNEL_PROPAGATION");
@@ -134,14 +134,14 @@ errno_t AtmosphericTurbulence_ReadConf(const char *restrict fnameconf,
     // ------------ POSTPROCESSING --------------
 
     strcpy(KEYWORD, "PUPIL_AMPL_FILE");
-    if (read_config_parameter_exists(fnameconf, "PUPIL_AMPL_FILE") == 1)
+    if(read_config_parameter_exists(fnameconf, "PUPIL_AMPL_FILE") == 1)
     {
         read_config_parameter(fnameconf, "PUPIL_AMPL_FILE", CONTENT);
         load_fits(CONTENT, "ST_pa", LOADFITS_ERRMODE_WARNING, NULL);
     }
 
     strcpy(KEYWORD, "PUPIL_PHA_FILE");
-    if (read_config_parameter_exists(fnameconf, "PUPIL_PHA_FILE") == 1)
+    if(read_config_parameter_exists(fnameconf, "PUPIL_PHA_FILE") == 1)
     {
         read_config_parameter(fnameconf, "PUPIL_PHA_FILE", CONTENT);
         load_fits(CONTENT, "ST_pp", LOADFITS_ERRMODE_WARNING, NULL);
