@@ -60,8 +60,8 @@ errno_t AtmosphericTurbulence_make_wavefront_sequence(float slambdaum,
 
 static errno_t AtmosphericTurbulence_make_wavefront_sequence__cli()
 {
-    if(0 + CLI_checkarg(1, CLIARG_FLOAT) + CLI_checkarg(2, CLIARG_LONG) +
-            CLI_checkarg(3, CLIARG_LONG) ==
+    if(0 + CLI_checkarg(1, CLIARG_FLOAT64) + CLI_checkarg(2, CLIARG_INT64) +
+            CLI_checkarg(3, CLIARG_INT64) ==
             0)
     {
         // If arguments meet requirements, command is executed

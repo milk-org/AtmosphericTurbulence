@@ -55,8 +55,8 @@ errno_t AtmosphericTurbulence_make_master_turbulence_screen_pow(
 static errno_t AtmosphericTurbulence_make_master_turbulence_screen_pow__cli()
 {
     if(0 + CLI_checkarg(1, CLIARG_STR_NOT_IMG) +
-            CLI_checkarg(2, CLIARG_STR_NOT_IMG) + CLI_checkarg(3, CLIARG_LONG) +
-            CLI_checkarg(4, CLIARG_FLOAT) ==
+            CLI_checkarg(2, CLIARG_STR_NOT_IMG) + CLI_checkarg(3, CLIARG_INT64) +
+            CLI_checkarg(4, CLIARG_FLOAT64) ==
             0)
     {
         // If arguments meet requirements, command is executed
